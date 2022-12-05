@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#App {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.green-background {
+  background-color: #5cb25d;
+}
+
+#content {
+  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+}
