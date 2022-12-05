@@ -14,7 +14,7 @@ The project is built using React and Symfony, they connect through API. In the p
 - Make sure you have Symfony and Composer installed on your machine, if not follow their websites instructions
 - Run `composer install`to install dependencies
 - When the installation is complete, run `symfony check:requirements` to check if you can run the Symfony Project
-- Run `symfony serve`, the server should now running on http:127.0.0.1/8000
+- Run `symfony serve`, the server should now running on http://127.0.0.1/8000
 
 ### Start React App
 - Install Nodejs from their website.
