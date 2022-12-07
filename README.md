@@ -9,6 +9,13 @@ The project is built using React and Symfony, they connect through API. In the p
 
 ## How to run the project
 
+### Setting up
+- Edit `DATABASE_URL` in .env file to match your MySQL configuration
+- Run `php bin/console doctrine:database:create` to create database in your MySQL
+- Run `php bin/console doctrine:migrations:migrate` to create tables in your MySQL database
+- Run `php bin/console doctrine:fixtures:load` to populate your database with demo data
+- Proceed to run Symfony and React
+
 ### Start Symfony server
 - Open "server" folder in VSC's integrated Terminal.
 - Make sure you have Symfony and Composer installed on your machine, if not follow their websites instructions
