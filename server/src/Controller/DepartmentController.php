@@ -19,9 +19,10 @@ class DepartmentController extends AbstractController
     }
 
     #[Route('/{departmentId}', name: 'view_detail')]
-    public function viewDepartmentDetail(): JsonResponse
+    public function viewDepartmentDetail($departmentId): JsonResponse
     {
-        return $this->json([]);
+        $department = $this->repository->find($departmentId);
+        return $this->json([$department]);
     }
 
 }
