@@ -23,9 +23,6 @@ class Appointment
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $patient_dob = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $patient_department = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $patient_message = null;
 
@@ -38,6 +35,10 @@ class Appointment
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Doctor $doctor = null;
+
+    #[ORM\ManyToOne(inversedBy: 'appointments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Department $patient_department = null;
 
     public function getId(): ?int
     {
@@ -76,18 +77,6 @@ class Appointment
     public function setPatientDob(\DateTimeInterface $patient_dob): self
     {
         $this->patient_dob = $patient_dob;
-
-        return $this;
-    }
-
-    public function getPatientDepartment(): ?string
-    {
-        return $this->patient_department;
-    }
-
-    public function setPatientDepartment(string $patient_department): self
-    {
-        $this->patient_department = $patient_department;
 
         return $this;
     }
@@ -136,6 +125,18 @@ class Appointment
     public function setDoctorId(?Doctor $doctor): self
     {
         $this->doctor = $doctor;
+
+        return $this;
+    }
+
+    public function getPatientDepartment(): ?Department
+    {
+        return $this->patient_department;
+    }
+
+    public function setPatientDepartment(?Department $patient_department): self
+    {
+        $this->patient_department = $patient_department;
 
         return $this;
     }

@@ -21,9 +21,13 @@ class Department
     #[ORM\OneToMany(mappedBy: 'department_id', targetEntity: Doctor::class)]
     private Collection $doctors;
 
+    #[ORM\OneToMany(mappedBy: 'patient_department', targetEntity: Appointment::class)]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->doctors = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,6 +71,36 @@ class Department
             // set the owning side to null (unless already changed)
             if ($doctor->getDepartmentId() === $this) {
                 $doctor->setDepartmentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): self
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setPatientDepartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): self
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getPatientDepartment() === $this) {
+                $appointment->setPatientDepartment(null);
             }
         }
 
