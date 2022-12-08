@@ -27,4 +27,5 @@ The project is built using React and Symfony, they connect through API. In the p
 - When the installation is complete, run `npm start`
 - The React App is should be running on http://localhost:3000 
 
-Test branch protection rule
+Test branch protection rule: lock branch
+Test branch protection rule: do not allow bypass
