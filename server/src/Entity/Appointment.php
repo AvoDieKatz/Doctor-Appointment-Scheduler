@@ -117,12 +117,12 @@ class Appointment
         return $this;
     }
 
-    public function getDoctorId(): ?Doctor
+    public function getDoctor(): ?Doctor
     {
         return $this->doctor;
     }
 
-    public function setDoctorId(?Doctor $doctor): self
+    public function setDoctor(?Doctor $doctor): self
     {
         $this->doctor = $doctor;
 

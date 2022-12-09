@@ -14,6 +14,7 @@ class UserFixtures extends Fixture
     public const USER3_REF = 'user3-ref';
     public const USER4_REF = 'user4-ref';
     public const USER5_REF = 'user5-ref';
+    public const USER6_REF = 'user6-ref';
 
     private $hasher;
 
@@ -59,6 +60,13 @@ class UserFixtures extends Fixture
             ->setRoles(['ROLE_DOCTOR']);
         $manager->persist($user5);
         $this->addReference(self::USER5_REF, $user5);
+
+        $user6 = new User();
+        $user6->setUsername('nguyenvanz')
+            ->setPassword($this->hasher->hashPassword($user6, "doc321"))
+            ->setRoles(['ROLE_DOCTOR']);
+        $manager->persist($user6);
+        $this->addReference(self::USER6_REF, $user6);
 
         $manager->flush();
     }

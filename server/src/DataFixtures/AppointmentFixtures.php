@@ -25,7 +25,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientMessage("I dont feel so good.")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-12-15'))
             ->setDone(false)
-            ->setDoctorId($this->getReference(DoctorFixtures::DOC2_REF));
+            ->setDoctor($this->getReference(DoctorFixtures::DOC2_REF));
         $manager->persist($appointment1);
         $this->addReference(self::APM1_REF, $appointment1);
 
@@ -37,7 +37,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientMessage("My child is having a stomache")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-11-30'))
             ->setDone(true)
-            ->setDoctorId($this->getReference(DoctorFixtures::DOC2_REF));
+            ->setDoctor($this->getReference(DoctorFixtures::DOC2_REF));
         $manager->persist($appointment2);
         $this->addReference(self::APM2_REF, $appointment2);
 
@@ -49,7 +49,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientMessage("I am not sure")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-12-20'))
             ->setDone(false)
-            ->setDoctorId($this->getReference(DoctorFixtures::DOC1_REF));
+            ->setDoctor($this->getReference(DoctorFixtures::DOC1_REF));
         $manager->persist($appointment3);
         $this->addReference(self::APM3_REF, $appointment3);
 
