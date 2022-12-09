@@ -9,13 +9,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/doctor', name: 'api_doctor_')]
 class DoctorController extends AbstractController
 {
-    #[Route('/appointments', name: 'view_assigned_appointments')]
-    public function viewAppointmentsAssigned(): JsonResponse
+    
+
+    #[Route('/create', name: 'create', methods: 'POST')]
+    public function createDoctor(): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DoctorController.php',
-        ]);
+        return $this->json([]);
+    }
+
+    #[Route('/{doctorId}/update', name: 'update', methods: 'PUT')]
+    public function updateDoctor($doctorId): JsonResponse
+    {
+        return $this->json([]);
+    }
+
+    #[Route('/delete/{doctorId}', name: 'delete', methods: 'DELETE')]
+    public function deleteDoctor($doctorId): JsonResponse
+    {
+        return $this->json([]);
     }
 
 }

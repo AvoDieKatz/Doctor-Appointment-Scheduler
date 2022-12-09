@@ -31,7 +31,7 @@ class AppointmentController extends AbstractController
                 'patient_name' => $appointment->getPatientName(),
                 'patient_gender' => $appointment->getPatientGender(),
                 'patient_dob' => $appointment->getPatientDob(),
-                'doctor' => $appointment->getDoctorId()->getName(),
+                'doctor' => $appointment->getDoctor()->getName(),
                 'patient_department' => $appointment->getPatientDepartment()->getName(),
                 'patient_message' => $appointment->getPatientMessage(),
                 'scheduled_date' => $appointment->getDate(),
@@ -49,9 +49,16 @@ class AppointmentController extends AbstractController
     //TODO: implement
     public function viewAppointmentDetail($appointmentId): JsonResponse
     {
-        return $this->json([]);
+        $appointment = $this->repository->find($appointmentId);
+        return $this->json($appointment);
     }
 
+    #[Route('/assigned-appointments', name: 'view_assigned_appointments')]
+    //TODO: implement
+    public function viewAppointmentsAssigned(): JsonResponse
+    {
+        return $this->json([]);
+    }
 
     #[Route('/create', name: 'create', methods: 'POST')]
     //TODO: implement
@@ -60,11 +67,4 @@ class AppointmentController extends AbstractController
         return $this->json([]);
     }
 
-
-    #[Route('/update/{appointmentId}', name: 'update', methods: 'PUT')]
-    //TODO: implement
-    public function updateAppointment($appointmentId): JsonResponse
-    {
-        return $this->json([]);
-    }
 }
