@@ -26,7 +26,7 @@ class Doctor
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'doctor_id', targetEntity: Appointment::class)]
+    #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Appointment::class)]
     private Collection $appointments;
 
     public function __construct()
@@ -51,12 +51,12 @@ class Doctor
         return $this;
     }
 
-    public function getDepartmentId(): ?Department
+    public function getDepartment(): ?Department
     {
         return $this->department;
     }
 
-    public function setDepartmentId(?Department $department): self
+    public function setDepartment(?Department $department): self
     {
         $this->department = $department;
 
@@ -87,7 +87,7 @@ class Doctor
     {
         if (!$this->appointments->contains($appointment)) {
             $this->appointments->add($appointment);
-            $appointment->setDoctorId($this);
+            $appointment->setDoctor($this);
         }
 
         return $this;
@@ -97,8 +97,8 @@ class Doctor
     {
         if ($this->appointments->removeElement($appointment)) {
             // set the owning side to null (unless already changed)
-            if ($appointment->getDoctorId() === $this) {
-                $appointment->setDoctorId(null);
+            if ($appointment->getDoctor() === $this) {
+                $appointment->setDoctor(null);
             }
         }
 

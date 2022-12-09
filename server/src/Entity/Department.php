@@ -18,7 +18,7 @@ class Department
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'department_id', targetEntity: Doctor::class)]
+    #[ORM\OneToMany(mappedBy: 'department', targetEntity: Doctor::class)]
     private Collection $doctors;
 
     #[ORM\OneToMany(mappedBy: 'patient_department', targetEntity: Appointment::class)]
@@ -59,7 +59,7 @@ class Department
     {
         if (!$this->doctors->contains($doctor)) {
             $this->doctors->add($doctor);
-            $doctor->setDepartmentId($this);
+            $doctor->setDepartment($this);
         }
 
         return $this;
@@ -69,8 +69,8 @@ class Department
     {
         if ($this->doctors->removeElement($doctor)) {
             // set the owning side to null (unless already changed)
-            if ($doctor->getDepartmentId() === $this) {
-                $doctor->setDepartmentId(null);
+            if ($doctor->getDepartment() === $this) {
+                $doctor->setDepartment(null);
             }
         }
 
