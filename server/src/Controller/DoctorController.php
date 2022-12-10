@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/doctor', name: 'api_doctor_')]
+#[Route('/api/doctors', name: 'api_doctor_')]
 class DoctorController extends AbstractController
 {
 
@@ -20,6 +20,18 @@ class DoctorController extends AbstractController
         $this->manager = $managerRegistry->getManager();
     }
 
+    #[Route('/', name: 'view_all', methods: 'GET')]
+    public function viewAllDoctor(): JsonResponse
+    {
+        return $this->json([]);
+    }
+
+    #[Route('/{doctorId}', name: 'view_detail', methods: 'GET')]
+    public function viewDoctorDetail(): JsonResponse
+    {
+        return $this->json([]);
+    }
+    
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createDoctor(): JsonResponse
     {
