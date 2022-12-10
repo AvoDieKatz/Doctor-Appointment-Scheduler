@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\DepartmentRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -12,13 +14,22 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 #[Route('/api/department', name: 'api_department_')]
 class DepartmentController extends AbstractController
 {
+
+    private $repository, $manager;
+
+    public function __construct(DepartmentRepository $departmentRepository, ManagerRegistry $managerRegistry)
+    {
+        $this->repository = $departmentRepository;
+        $this->manager = $managerRegistry->getManager();
+    }
+
     #[Route('/', name: 'view_all')]
     //TODO: implement
-    public function viewAllDepartments(DepartmentRepository $repository): JsonResponse
+    public function viewAllDepartments(): JsonResponse
     {
-        $departments = $repository->findAll();
+        $departments = $this->repository->findAll();
         //Custom DQL to get id and name of department
-        $myDepartments = $repository->listDept();
+        // $myDepartments = $this->repository->listDept();
         $data = [];
         foreach ($departments as $department) {
             $data[] = [
