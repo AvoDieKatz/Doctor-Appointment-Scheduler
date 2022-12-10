@@ -13,10 +13,10 @@ class AppointmentController extends AbstractController
 {
     private $repository, $manager;
 
-    public function __construct(AppointmentRepository $appointmentRepository, ManagerRegistry $manager)
+    public function __construct(AppointmentRepository $appointmentRepository, ManagerRegistry $managerRegistry)
     {
         $this->repository = $appointmentRepository;
-        $this->manager = $manager->getManager();
+        $this->manager = $managerRegistry->getManager();
     }
 
     #[Route('/', name: 'view_all')]

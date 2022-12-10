@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Appointment;
 use App\Repository\AppointmentRepository;
+use App\Repository\ReportRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ReportController extends AbstractController
 {
+
+    private $repository, $manager;
+
+    public function __construct(ReportRepository $reportRepository, ManagerRegistry $managerRegistry)
+    {
+        $this->repository = $reportRepository;
+        $this->manager = $managerRegistry->getManager();
+    }
 
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createReport(): JsonResponse
