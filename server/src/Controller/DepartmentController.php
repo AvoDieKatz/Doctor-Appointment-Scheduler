@@ -57,6 +57,9 @@ class DepartmentController extends AbstractController
     public function viewDepartmentDetail($departmentId): JsonResponse
     {
         $department = $this->repository->find($departmentId);
+        if (!$department) {
+            throw $this->createNotFoundException('The requested department does not exist');
+        }
         $data = [
             'id' => $department->getId(), 
             'name' => $department->getName(),
