@@ -23,13 +23,14 @@ class DepartmentController extends AbstractController
         $this->manager = $managerRegistry->getManager();
     }
 
+    /*
+        This route returns all Departments in the system 
+        and its id, name and doctors associated
+    */
     #[Route('/', name: 'view_all')]
-    //TODO: implement
     public function viewAllDepartments(): JsonResponse
     {
         $departments = $this->repository->findAll();
-        //Custom DQL to get id and name of department
-        // $myDepartments = $this->repository->listDept();
         $data = [];
         foreach ($departments as $department) {
             $data[] = [
@@ -40,7 +41,6 @@ class DepartmentController extends AbstractController
         }
         return $this->json(
             $data,
-            // $myDepartments,
             Response::HTTP_OK,
             [],
             [
@@ -54,11 +54,19 @@ class DepartmentController extends AbstractController
         );
     }
 
+    /*
+        This route returns department's id, name and doctors of this department
+    */
     #[Route('/{departmentId}', name: 'view_detail')]
-    //TODO: implement
     public function viewDepartmentDetail($departmentId): JsonResponse
     {
-        return $this->json([]);
+        $department = $this->repository->find($departmentId);
+        return $this->json($department, Response::HTTP_OK, [], [
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments'],
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            }
+        ]);
     }
 
     #[Route('/create', name: 'create', methods: 'POST')]
