@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/report', name: 'api_report_')]
+#[Route('/api/reports', name: 'api_report_')]
 
 class ReportController extends AbstractController
 {
@@ -27,9 +27,7 @@ class ReportController extends AbstractController
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createReport(): JsonResponse
     {
-        return $this->json([
-            'message' => 'Check'
-        ]);
+        return $this->json([]);
     }
 
     #[Route('/update/{appointmentId}', name: 'update', methods: 'PUT')]

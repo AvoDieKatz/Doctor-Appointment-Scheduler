@@ -6,11 +6,14 @@ use App\Repository\AppointmentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/api/appointments', name: 'api_appointments_')]
 class AppointmentController extends AbstractController
 {
+
     private $repository, $manager;
 
     public function __construct(AppointmentRepository $appointmentRepository, ManagerRegistry $managerRegistry)
@@ -19,8 +22,10 @@ class AppointmentController extends AbstractController
         $this->manager = $managerRegistry->getManager();
     }
 
-    #[Route('/', name: 'view_all')]
-    //TODO: implement
+    /*
+        This route returns all appointments and their attributes
+    */
+    #[Route('/', name: 'view_all', methods: 'GET')]
     public function viewAllAppointments()
     {
         $appointments = $this->repository->findAll();
@@ -38,24 +43,42 @@ class AppointmentController extends AbstractController
                 'isDone' => $appointment->isDone(),
             ];
         }
-
-        return $this->json([
-            'appointments' => $data
-        ]);
+        return $this->json($data);
     }
 
-
-    #[Route('/{appointmentId}', name: 'view_detail')]
-    //TODO: implement
+    /*
+        This route returns detailed information about the appointment
+    */
+    #[Route('/{appointmentId}', name: 'view_detail', methods: 'GET')]
     public function viewAppointmentDetail($appointmentId): JsonResponse
     {
         $appointment = $this->repository->find($appointmentId);
-        return $this->json($appointment);
+        $data = [
+            'id' => $appointment->getId(),
+            'patient_name' => $appointment->getPatientName(),
+            'patient_gender' => $appointment->getPatientGender(),
+            'patient_dob' => $appointment->getPatientDob(),
+            'patient_message' => $appointment->getPatientMessage(),
+            'scheduled_date' => $appointment->getDate(),
+            'isDone' => $appointment->isDone(),
+            'patient_department' => $appointment->getPatientDepartment()->getName(),
+            'doctor' => $appointment->getDoctor()->getName(),
+        ];
+        return $this->json($data, Response::HTTP_OK,
+        [],
+        [
+            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            }
+        ]);
     }
 
-    #[Route('/assigned-appointments', name: 'view_assigned_appointments')]
+    /*
+        This route returns all the appointments assigned to a doctor
+    */
+    #[Route('/assigned/doctor/{doctorId}', name: 'view_assigned', methods: 'GET')]
     //TODO: implement
-    public function viewAppointmentsAssigned(): JsonResponse
+    public function viewAppointmentsAssigned($doctorId): JsonResponse
     {
         return $this->json([]);
     }
@@ -66,5 +89,4 @@ class AppointmentController extends AbstractController
     {
         return $this->json([]);
     }
-
 }

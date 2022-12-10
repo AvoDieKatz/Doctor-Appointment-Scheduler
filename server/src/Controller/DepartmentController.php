@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-#[Route('/api/department', name: 'api_department_')]
+#[Route('/api/departments', name: 'api_department_')]
 class DepartmentController extends AbstractController
 {
 
@@ -24,10 +24,9 @@ class DepartmentController extends AbstractController
     }
 
     /*
-        This route returns all Departments in the system 
-        and its id, name and doctors associated
+        This route returns all Departments in the system and its id and name
     */
-    #[Route('/', name: 'view_all')]
+    #[Route('/', name: 'view_all', methods: 'GET')]
     public function viewAllDepartments(): JsonResponse
     {
         $departments = $this->repository->findAll();
@@ -36,7 +35,6 @@ class DepartmentController extends AbstractController
             $data[] = [
                 'id' => $department->getId(),
                 'name' => $department->getName(),
-                'doctors' => $department->getDoctors()
             ];
         }
         return $this->json(
@@ -44,8 +42,6 @@ class DepartmentController extends AbstractController
             Response::HTTP_OK,
             [],
             [
-                //Ignore the unwanted attributes
-                ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments'],
                 //Handle Circular Reference Exception in Association Relationship
                 ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                     return $object->getId();
@@ -57,16 +53,27 @@ class DepartmentController extends AbstractController
     /*
         This route returns department's id, name and doctors of this department
     */
-    #[Route('/{departmentId}', name: 'view_detail')]
+    #[Route('/{departmentId}', name: 'view_detail', methods: 'GET')]
     public function viewDepartmentDetail($departmentId): JsonResponse
     {
         $department = $this->repository->find($departmentId);
-        return $this->json($department, Response::HTTP_OK, [], [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments'],
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-                return $object->getId();
-            }
-        ]);
+        $data = [
+            'id' => $department->getId(), 
+            'name' => $department->getName(),
+            'doctors' => $department->getDoctors()
+        ];
+        return $this->json(
+            $data,
+            Response::HTTP_OK,
+            [],
+            [
+                //Ignore the unwanted attributes inside associated attributes
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments'],
+                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                }
+            ]
+        );
     }
 
     #[Route('/create', name: 'create', methods: 'POST')]
