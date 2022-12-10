@@ -53,6 +53,9 @@ class AppointmentController extends AbstractController
     public function viewAppointmentDetail($appointmentId): JsonResponse
     {
         $appointment = $this->repository->find($appointmentId);
+        if (!$appointment) {
+            throw $this->createNotFoundException('The request appointment does not exist');
+        }
         $data = [
             'id' => $appointment->getId(),
             'patient_name' => $appointment->getPatientName(),
@@ -64,13 +67,16 @@ class AppointmentController extends AbstractController
             'patient_department' => $appointment->getPatientDepartment()->getName(),
             'doctor' => $appointment->getDoctor()->getName(),
         ];
-        return $this->json($data, Response::HTTP_OK,
-        [],
-        [
-            ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-                return $object->getId();
-            }
-        ]);
+        return $this->json(
+            $data,
+            Response::HTTP_OK,
+            [],
+            [
+                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                }
+            ]
+        );
     }
 
     /*
