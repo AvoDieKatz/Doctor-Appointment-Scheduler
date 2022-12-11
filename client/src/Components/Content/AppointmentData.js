@@ -9,17 +9,31 @@ import {
     ListItemText,
     Collapse,
     Divider,
+    Box,
+    TextField,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-const AppointmentMain = ({ setShowExamination }) => {
+const AppointmentDetail = ({ setShowExamination }) => {
     const handleViewClick = () => {
         setShowExamination(true);
     };
 
     return (
-        <>
+        <Grid
+            container
+            direction="column"
+            flex="1 1 auto"
+            sx={{
+                "& .MuiTypography-root": {
+                    mb: "20px",
+                },
+            }}
+        >
             <Grid container justifyContent="space-between">
                 <Grid>
                     <Typography>Patient Name: </Typography>
@@ -51,11 +65,11 @@ const AppointmentMain = ({ setShowExamination }) => {
                     </Button>
                 </Grid>
             </Grid>
-        </>
+        </Grid>
     );
 };
 
-const AppointmentSide = () => {
+const AppointmentList = () => {
     const [openToday, setOpenToday] = useState(true);
 
     const handleClick = () => {
@@ -63,8 +77,13 @@ const AppointmentSide = () => {
     };
 
     return (
-        <List component="nav">
-            <ListItemButton onClick={handleClick}>
+        <List component="nav" disablePadding="true">
+            <ListItemButton
+                onClick={handleClick}
+                sx={{
+                    p: 0,
+                }}
+            >
                 <ListItemText primary="Today" />
                 {openToday ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
@@ -74,14 +93,14 @@ const AppointmentSide = () => {
                     disablePadding
                     sx={{
                         "& .MuiListItemButton-root": {
-                            pl: 4,
+                            p: "0 0 0 1rem"
                         },
                     }}
                 >
                     <ListItemButton>
                         <ListItemText primary="Tran Anh Tung - M - 21" />
                     </ListItemButton>
-                    <ListItemButton>
+                    <ListItemButton disabled>
                         <ListItemText primary="Tran Avo Tung - F - 27" />
                     </ListItemButton>
                     <ListItemButton>
@@ -93,34 +112,168 @@ const AppointmentSide = () => {
     );
 };
 
-const ExaminationMain = ({ setShowExamination }) => {
+const reportSchema = yup.object({
+    blood: yup
+        .number()
+        .positive("Can't be negative")
+        .typeError("Must be a number")
+        .required("Required field"),
+    oxygen: yup
+        .number()
+        .positive("Can't be negative")
+        .typeError("Must be a number")
+        .required("Required field"),
+    weight: yup
+        .number()
+        .positive("Can't be negative")
+        .typeError("Must be a number")
+        .required("Required field"),
+    conclusion: yup.string().required("Please provide your conclusion"),
+});
+
+const ReportAppointmentForm = ({ setShowExamination }) => {
+    const { control, handleSubmit } = useForm({
+        resolver: yupResolver(reportSchema),
+    });
+
+    const onSubmit = (data) => {
+        console.log(data);
+    };
+
     const handleViewClick = () => {
         setShowExamination(false);
     };
 
     return (
-        <Grid container>
-            <Grid>Examination Report Form</Grid>
-            <Grid>
-                <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    onClick={handleViewClick}
+        <Grid container justifyContent="center">
+            <Grid xs={10}>
+                <Box
+                    component="form"
+                    sx={{
+                        "& .MuiTextField-root": {
+                            mb: "20px",
+                            width: "100%",
+                        },
+                        "& .MuiButton-root": {
+                            width: "160px",
+                        },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
                 >
-                    Return
-                </Button>
-                <Button variant="contained" size="small">
-                    Submit Report
-                </Button>
+                    <Grid xs={12}>
+                        <Controller
+                            control={control}
+                            name="blood"
+                            render={({
+                                field,
+                                fieldState: { invalid, error },
+                            }) => (
+                                <TextField
+                                    {...field}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={invalid}
+                                    helperText={error?.message}
+                                    required
+                                    label="Blood Pressure"
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid xs={12}>
+                        <Controller
+                            control={control}
+                            name="oxygen"
+                            render={({
+                                field,
+                                fieldState: { invalid, error },
+                            }) => (
+                                <TextField
+                                    {...field}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={invalid}
+                                    helperText={error?.message}
+                                    required
+                                    label="Oxygen Level"
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid xs={12}>
+                        <Controller
+                            control={control}
+                            name="weight"
+                            render={({
+                                field,
+                                fieldState: { invalid, error },
+                            }) => (
+                                <TextField
+                                    {...field}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={invalid}
+                                    helperText={error?.message}
+                                    required
+                                    label="Weight"
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid xs={12}>
+                        <Controller
+                            control={control}
+                            name="conclusion"
+                            render={({
+                                field,
+                                fieldState: { invalid, error },
+                            }) => (
+                                <TextField
+                                    {...field}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={invalid}
+                                    helperText={error?.message}
+                                    required
+                                    multiline
+                                    rows={4}
+                                    label="Doctor's Conclusion"
+                                />
+                            )}
+                        ></Controller>
+                    </Grid>
+                    <Grid container justifyContent="space-between" mt={3}>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            size="small"
+                            onClick={handleViewClick}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" variant="contained" size="small">
+                            Submit Report
+                        </Button>
+                    </Grid>
+                </Box>
             </Grid>
         </Grid>
     );
 };
 
-const ExaminationSide = () => {
+const ReportAppointmentDetail = () => {
     return (
-        <Grid container>
+        <Grid
+            container
+            direction="column"
+            sx={{
+                "& .MuiTypography-root": {
+                    mb: "20px",
+                },
+            }}
+        >
             <Grid>
                 <Typography>Name: </Typography>
             </Grid>
@@ -160,21 +313,21 @@ const View = ({ showExamination, setShowExamination }) => {
                 </Grid>
             </Grid>
             <Grid container flex="1 1 auto">
-                <Grid xs={4} className="table-content">
+                <Grid xs={4} className="table-content table-content-side">
                     {showExamination ? (
-                        <ExaminationSide />
+                        <ReportAppointmentDetail />
                     ) : (
-                        <AppointmentSide />
+                        <AppointmentList />
                     )}
                 </Grid>
                 <Divider orientation="vertical" variant="middle" flexItem />
-                <Grid xs={8} className="table-content">
+                <Grid xs={8} className="table-content table-content-main">
                     {showExamination ? (
-                        <ExaminationMain
+                        <ReportAppointmentForm
                             setShowExamination={setShowExamination}
                         />
                     ) : (
-                        <AppointmentMain
+                        <AppointmentDetail
                             setShowExamination={setShowExamination}
                         />
                     )}
@@ -184,7 +337,7 @@ const View = ({ showExamination, setShowExamination }) => {
     );
 };
 
-const AppointmentData = () => {
+const DoctorAppointment = () => {
     const [showExamination, setShowExamination] = useState(false);
 
     return (
@@ -202,12 +355,12 @@ const AppointmentData = () => {
                     color: "primary.text",
                 },
                 "& .table-content": {
+                    padding: "16px",
+                },
+                "& .table-content.table-content-main": {
                     display: "flex",
                     flexDirection: "column",
                     flex: "1 1 auto",
-                    "& > .MuiGrid-root": {
-                        mt: 2,
-                    },
                 },
             }}
         >
@@ -219,4 +372,4 @@ const AppointmentData = () => {
     );
 };
 
-export default AppointmentData;
+export default DoctorAppointment;
