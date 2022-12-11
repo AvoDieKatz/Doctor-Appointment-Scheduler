@@ -2,17 +2,16 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
-import PatientPage from "./Page/PatientPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { StyledEngineProvider } from "@mui/material/styles";
+import Container from "@mui/material/Container";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
+import PatientPage from "./Page/PatientPage";
 import AuthenticationPage from "./Page/AuthenticationPage";
 import DoctorPage from "./Page/DoctorPage";
 
-import Container from "@mui/material/Container";
-import ExaminationForm from "./Components/Content/ExaminationForm";
 
 const theme = createTheme({
     palette: {
