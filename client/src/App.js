@@ -4,14 +4,11 @@ import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { StyledEngineProvider } from "@mui/material/styles";
-import Container from "@mui/material/Container";
+import { Container, Grid } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
-import PatientPage from "./Page/PatientPage";
-import AuthenticationPage from "./Page/AuthenticationPage";
-import DoctorPage from "./Page/DoctorPage";
-
+import { Outlet } from "react-router-dom";
 
 const theme = createTheme({
     palette: {
@@ -25,6 +22,16 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     color: "#faf6ed",
+                    backgroundColor: "#5cb25d",
+                    "&:hover": {
+                        backgroundColor: "#407d41",
+                    },
+                    "&.danger": {
+                        backgroundColor: "#cc0004"
+                    },
+                    "&.danger:hover": {
+                        backgroundColor: "#b30004"
+                    }
                 },
             },
         },
@@ -46,9 +53,31 @@ function App() {
                     <ThemeProvider theme={theme}>
                         <Header user={user} />
                         <Container id="content">
-                            {/* <PatientPage /> */}
-                            {/* <AuthenticationPage setUser={setUser} /> */}
-                            <DoctorPage />
+                            <Grid
+                                container
+                                flexDirection="column"
+                                sx={{
+                                    padding: "4vh 0",
+                                    "& .table-header": {
+                                        backgroundColor: "primary.main",
+                                    },
+                                    "& .table-header .MuiTypography-root": {
+                                        m: "16px 0",
+                                        textAlign: "center",
+                                        color: "primary.text",
+                                    },
+                                    "& .table-content": {
+                                        padding: "16px",
+                                    },
+                                    "& .table-content.table-content-main": {
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        flex: "1 1 auto",
+                                    },
+                                }}
+                            >
+                                <Outlet />
+                            </Grid>
                         </Container>
                         <Footer />
                     </ThemeProvider>
