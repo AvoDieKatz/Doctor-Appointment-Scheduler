@@ -2,12 +2,14 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { StyledEngineProvider } from "@mui/material/styles";
+import {
+    createTheme,
+    ThemeProvider,
+    StyledEngineProvider,
+} from "@mui/material/styles";
 import { Container, Grid } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-
 import { Outlet } from "react-router-dom";
 
 const theme = createTheme({
@@ -15,6 +17,12 @@ const theme = createTheme({
         primary: {
             main: "#5cb25d",
             text: "#faf6ed",
+        },
+        neutral: {
+            main: "#212121",
+        },
+        error: {
+            main: "#cc0004",
         },
     },
     components: {
@@ -27,11 +35,11 @@ const theme = createTheme({
                         backgroundColor: "#407d41",
                     },
                     "&.danger": {
-                        backgroundColor: "#cc0004"
+                        backgroundColor: "#cc0004",
                     },
                     "&.danger:hover": {
-                        backgroundColor: "#b30004"
-                    }
+                        backgroundColor: "#b30004",
+                    },
                 },
             },
         },

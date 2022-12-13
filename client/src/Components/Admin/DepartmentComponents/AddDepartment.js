@@ -3,16 +3,29 @@ import { Box, Button, Grid, Stack, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { ReturnButton } from "../index";
+import { useNavigate } from "react-router-dom";
 
-const departmentSchema = yup.object({});
+const departmentSchema = yup.object({
+    department_name: yup
+        .string()
+        .required("Please provide a name for this department"),
+});
 
-const DepartmentManagementForm = ({ handleView }) => {
-    const { control, handleSubmit } = useForm({
+const AddDepartment = ({ handleView }) => {
+    const navigate = useNavigate();
+
+    const {
+        control,
+        handleSubmit,
+        formState: { isDirty },
+    } = useForm({
         resolver: yupResolver(departmentSchema),
     });
 
     const onSubmit = (data) => {
         console.log(data);
+        navigate("/admin/departments");
     };
 
     return (
@@ -20,11 +33,19 @@ const DepartmentManagementForm = ({ handleView }) => {
             container
             justifyContent="center"
             sx={{
+                position: "relative",
                 width: "100%",
                 height: "100%",
             }}
         >
-            <Grid item display="flex" justifyContent="center" alignContent="center" xs={8}>
+            <ReturnButton />
+            <Grid
+                item
+                display="flex"
+                justifyContent="center"
+                alignContent="center"
+                xs={8}
+            >
                 <Box
                     component="form"
                     noValidate
@@ -33,11 +54,9 @@ const DepartmentManagementForm = ({ handleView }) => {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <Stack>
-                        <Button onClick={handleView}>Back</Button>
-
                         <Controller
                             control={control}
-                            name="name"
+                            name="department_name"
                             render={({
                                 field,
                                 fieldState: { invalid, error },
@@ -53,8 +72,12 @@ const DepartmentManagementForm = ({ handleView }) => {
                                 />
                             )}
                         />
-
-                        <Button type="submit" variant="filled">
+                        <Button
+                            type="submit"
+                            disabled={!isDirty}
+                            variant="filled"
+                            sx={{ mt: 3 }}
+                        >
                             Add New
                         </Button>
                     </Stack>
@@ -64,4 +87,4 @@ const DepartmentManagementForm = ({ handleView }) => {
     );
 };
 
-export default DepartmentManagementForm;
+export default AddDepartment;

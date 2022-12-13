@@ -10,6 +10,7 @@ import { useLocation, Link } from "react-router-dom";
 
 const Sidenav = () => {
     const path = useLocation();
+    const section = path.pathname.split("/")[2];
 
     return (
         <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
@@ -29,7 +30,7 @@ const Sidenav = () => {
                 <ListItemButton
                     component={Link}
                     to="appointments"
-                    selected={path.pathname === "/admin/appointments"}
+                    selected={section === "appointments"}
                 >
                     <ListItemText primary="Appointments" />
                 </ListItemButton>
@@ -37,7 +38,7 @@ const Sidenav = () => {
                 <ListItemButton
                     component={Link}
                     to="doctors"
-                    selected={path.pathname === "/admin/doctors"}
+                    selected={section === "doctors"}
                 >
                     <ListItemText primary="Doctor Management" />
                 </ListItemButton>
@@ -45,7 +46,7 @@ const Sidenav = () => {
                 <ListItemButton
                     component={Link}
                     to="departments"
-                    selected={path.pathname === "/admin/departments"}
+                    selected={section === "departments"}
                 >
                     <ListItemText primary="Department Management" />
                 </ListItemButton>

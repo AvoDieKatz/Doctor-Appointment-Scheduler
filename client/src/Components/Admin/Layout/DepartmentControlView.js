@@ -4,7 +4,7 @@ import {
     AddButton,
     DepartmentTable,
     SearchField,
-    DepartmentManagementForm,
+    AddDepartment,
 } from "../index";
 
 const DepartmentControlView = () => {
@@ -21,7 +21,7 @@ const DepartmentControlView = () => {
     return (
         <>
             {editting ? (
-                <DepartmentManagementForm handleView={switchToMainView} />
+                <AddDepartment handleView={switchToMainView} />
             ) : (
                 <DepartmentMainView handleView={switchToAddView} />
             )}
@@ -37,7 +37,7 @@ const DepartmentMainView = ({ handleView }) => {
                     <SearchField />
                 </Grid>
                 <Grid>
-                    <AddButton switchView={handleView} />
+                    <AddButton />
                 </Grid>
             </Grid>
             <Grid container>

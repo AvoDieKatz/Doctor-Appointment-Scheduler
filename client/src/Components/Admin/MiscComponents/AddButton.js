@@ -1,13 +1,15 @@
 import React from "react";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { Link } from "react-router-dom";
 
-const AddButton = ({switchView}) => {
+const AddButton = () => {
     return (
         <Button
-            onClick={switchView}
+            component={Link}
+            to="add"
             endIcon={<AddIcon />}
-            sx={{height: '100%'}}
+            sx={{ height: "100%" }}
         >
             New
         </Button>

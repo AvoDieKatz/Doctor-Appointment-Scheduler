@@ -6,6 +6,8 @@ import {
     DepartmentControlView,
     DoctorControlView,
     AppointmentControlView,
+    AddDepartment,
+    EditDepartment,
 } from "../Components/Admin/index";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminHome from "../Components/Admin/Layout/AdminHome";
@@ -39,10 +41,17 @@ const View = () => {
                                 path="doctors"
                                 element={<DoctorControlView />}
                             />
-                            <Route
-                                path="departments"
-                                element={<DepartmentControlView />}
-                            />
+                            <Route path="departments">
+                                <Route
+                                    index
+                                    element={<DepartmentControlView />}
+                                />
+                                <Route path="add" element={<AddDepartment />} />
+                                <Route
+                                    path=":id/update"
+                                    element={<EditDepartment />}
+                                />
+                            </Route>
                             <Route
                                 path="*"
                                 element={<Navigate to="/not-found" />}
