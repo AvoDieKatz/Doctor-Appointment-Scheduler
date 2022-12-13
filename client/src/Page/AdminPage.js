@@ -2,16 +2,15 @@ import React from "react";
 
 import { Grid, Typography, Divider } from "@mui/material";
 import {
-    SideNav,
+    AdminHome,
     DepartmentControlView,
     DoctorControlView,
     AppointmentControlView,
     AddDepartment,
     EditDepartment,
-} from "../Components/Admin/index";
+} from "../Components/Admin/AdminIndex";
+import { SideNav, StaffLayout } from "../Components/Common/CommonIndex";
 import { Navigate, Route, Routes } from "react-router-dom";
-import AdminHome from "../Components/Admin/Layout/AdminHome";
-import AdminLayout from "../Components/Admin/Layout/AdminLayout";
 
 const View = () => {
     return (
@@ -31,7 +30,7 @@ const View = () => {
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Grid item xs={8} className="table-content table-content-main">
                     <Routes>
-                        <Route element={<AdminLayout />}>
+                        <Route element={<StaffLayout />}>
                             <Route index element={<AdminHome />} />
                             <Route
                                 path="appointments"

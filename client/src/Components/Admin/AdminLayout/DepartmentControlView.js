@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import {
-    AddButton,
-    DepartmentTable,
-    SearchField,
-    AddDepartment,
-} from "../index";
+import { DepartmentTable, AddDepartment } from "../AdminIndex";
+import { AddButton, SearchField } from "../../Common/CommonIndex";
 
 const DepartmentControlView = () => {
     const [editting, setEditting] = useState(false);

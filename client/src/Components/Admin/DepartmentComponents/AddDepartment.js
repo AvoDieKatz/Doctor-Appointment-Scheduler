@@ -3,7 +3,7 @@ import { Box, Button, Grid, Stack, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { ReturnButton } from "../index";
+import { ReturnButton } from "../../Common/CommonIndex";
 import { useNavigate } from "react-router-dom";
 
 const departmentSchema = yup.object({
