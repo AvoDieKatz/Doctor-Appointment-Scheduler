@@ -11,34 +11,34 @@ const DoctorPage = () => {
     const [showExamination, setShowExamination] = useState(false);
 
     return (
-        <Grid
-            container
-            flexDirection="column"
-            sx={{
-                padding: "5vh",
-                "& .table-header": {
-                    backgroundColor: "primary.main",
-                },
-                "& .table-header .MuiTypography-root": {
-                    m: "16px 0",
-                    textAlign: "center",
-                    color: "primary.text",
-                },
-                "& .table-content": {
-                    padding: "16px",
-                },
-                "& .table-content.table-content-main": {
-                    display: "flex",
-                    flexDirection: "column",
-                    flex: "1 1 auto",
-                },
-            }}
-        >
+        // <Grid
+        //     container
+        //     flexDirection="column"
+        //     sx={{
+        //         padding: "4vh 0",
+        //         "& .table-header": {
+        //             backgroundColor: "primary.main",
+        //         },
+        //         "& .table-header .MuiTypography-root": {
+        //             m: "16px 0",
+        //             textAlign: "center",
+        //             color: "primary.text",
+        //         },
+        //         "& .table-content": {
+        //             padding: "16px",
+        //         },
+        //         "& .table-content.table-content-main": {
+        //             display: "flex",
+        //             flexDirection: "column",
+        //             flex: "1 1 auto",
+        //         },
+        //     }}
+        // >
             <View
                 showExamination={showExamination}
                 setShowExamination={setShowExamination}
             />
-        </Grid>
+        // </Grid>
     );
 
 };
