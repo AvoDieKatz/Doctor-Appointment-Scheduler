@@ -1,7 +1,14 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
+import { useLocation } from "react-router-dom";
+
+// const arr = ["suv", "sedan", 'sport'];
+// const [ford,,lambo] = vehicles;
 
 const ReportAppointmentDetail = () => {
+    const { state: data } = useLocation();
+    const { name, gender, age, dept, message } = data;
+
     return (
         <Grid
             container
@@ -13,19 +20,19 @@ const ReportAppointmentDetail = () => {
             }}
         >
             <Grid>
-                <Typography>Name: </Typography>
+                <Typography>Name: {name}</Typography>
             </Grid>
             <Grid>
-                <Typography>Gender: </Typography>
+                <Typography>Gender: {gender}</Typography>
             </Grid>
             <Grid>
-                <Typography>Age: </Typography>
+                <Typography>Age: {age}</Typography>
             </Grid>
             <Grid>
-                <Typography>Check for: </Typography>
+                <Typography>Check for: {dept}</Typography>
             </Grid>
             <Grid>
-                <Typography>Message: </Typography>
+                <Typography>Message: {message}</Typography>
             </Grid>
         </Grid>
     );
