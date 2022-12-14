@@ -3,6 +3,7 @@ import { Grid, Box, TextField, Button } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const reportSchema = yup.object({
     blood: yup
@@ -23,22 +24,25 @@ const reportSchema = yup.object({
     conclusion: yup.string().required("Please provide your conclusion"),
 });
 
-const ReportForm = ({ setShowExamination }) => {
+const ReportForm = () => {
+    const navigate = useNavigate();
+    
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(reportSchema),
     });
 
     const onSubmit = (data) => {
         console.log(data);
+        navigate("/doctor")
     };
 
-    const handleViewClick = () => {
-        setShowExamination(false);
-    };
+    const handleReturn = () => {
+        navigate(-1);
+    }
 
     return (
         <Grid container justifyContent="center">
-            <Grid xs={10}>
+            <Grid item xs={10}>
                 <Box
                     component="form"
                     sx={{
@@ -54,7 +58,7 @@ const ReportForm = ({ setShowExamination }) => {
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                         <Controller
                             control={control}
                             name="blood"
@@ -74,7 +78,7 @@ const ReportForm = ({ setShowExamination }) => {
                             )}
                         />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                         <Controller
                             control={control}
                             name="oxygen"
@@ -94,7 +98,7 @@ const ReportForm = ({ setShowExamination }) => {
                             )}
                         />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                         <Controller
                             control={control}
                             name="weight"
@@ -114,7 +118,7 @@ const ReportForm = ({ setShowExamination }) => {
                             )}
                         />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                         <Controller
                             control={control}
                             name="conclusion"
@@ -141,7 +145,7 @@ const ReportForm = ({ setShowExamination }) => {
                             variant="contained"
                             color="error"
                             size="small"
-                            onClick={handleViewClick}
+                            onClick={handleReturn}
                         >
                             Cancel
                         </Button>
