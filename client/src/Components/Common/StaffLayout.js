@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const AdminLayout = () => {
+const StaffLayout = () => {
     return <Outlet />;
 };
 
-export default AdminLayout;
+export default StaffLayout;

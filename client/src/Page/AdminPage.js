@@ -2,16 +2,17 @@ import React from "react";
 
 import { Grid, Typography, Divider } from "@mui/material";
 import {
-    SideNav,
+    AdminHome,
     DepartmentControlView,
     DoctorControlView,
     AppointmentControlView,
     AddDepartment,
     EditDepartment,
-} from "../Components/Admin/index";
+    AddDoctor,
+    EditDoctor,
+} from "../Components/Admin/AdminIndex";
+import { SideNav, StaffLayout } from "../Components/Common/CommonIndex";
 import { Navigate, Route, Routes } from "react-router-dom";
-import AdminHome from "../Components/Admin/Layout/AdminHome";
-import AdminLayout from "../Components/Admin/Layout/AdminLayout";
 
 const View = () => {
     return (
@@ -31,21 +32,22 @@ const View = () => {
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Grid item xs={8} className="table-content table-content-main">
                     <Routes>
-                        <Route element={<AdminLayout />}>
+                        <Route element={<StaffLayout />}>
                             <Route index element={<AdminHome />} />
                             <Route
                                 path="appointments"
                                 element={<AppointmentControlView />}
                             />
-                            <Route
-                                path="doctors"
-                                element={<DoctorControlView />}
-                            />
-                            <Route path="departments">
+                            <Route path="doctors">
+                                <Route index element={<DoctorControlView />} />
+                                <Route path="add" element={<AddDoctor />} />
                                 <Route
-                                    index
-                                    element={<DepartmentControlView />}
+                                    path=":id/update"
+                                    element={<EditDoctor />}
                                 />
+                            </Route>
+                            <Route path="departments">
+                                <Route index element={<DepartmentControlView />} />
                                 <Route path="add" element={<AddDepartment />} />
                                 <Route
                                     path=":id/update"
