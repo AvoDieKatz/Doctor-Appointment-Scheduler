@@ -8,6 +8,8 @@ import {
     AppointmentControlView,
     AddDepartment,
     EditDepartment,
+    AddDoctor,
+    EditDoctor,
 } from "../Components/Admin/AdminIndex";
 import { SideNav, StaffLayout } from "../Components/Common/CommonIndex";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -36,15 +38,16 @@ const View = () => {
                                 path="appointments"
                                 element={<AppointmentControlView />}
                             />
-                            <Route
-                                path="doctors"
-                                element={<DoctorControlView />}
-                            />
-                            <Route path="departments">
+                            <Route path="doctors">
+                                <Route index element={<DoctorControlView />} />
+                                <Route path="add" element={<AddDoctor />} />
                                 <Route
-                                    index
-                                    element={<DepartmentControlView />}
+                                    path=":id/update"
+                                    element={<EditDoctor />}
                                 />
+                            </Route>
+                            <Route path="departments">
+                                <Route index element={<DepartmentControlView />} />
                                 <Route path="add" element={<AddDepartment />} />
                                 <Route
                                     path=":id/update"

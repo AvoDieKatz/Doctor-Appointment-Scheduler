@@ -1,31 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import Grid from "@mui/material/Grid";
-import { DepartmentTable, AddDepartment } from "../AdminIndex";
+import { DepartmentTable } from "../AdminIndex";
 import { AddButton, SearchField } from "../../Common/CommonIndex";
 
 const DepartmentControlView = () => {
-    const [editting, setEditting] = useState(false);
-
-    const switchToAddView = () => {
-        setEditting(true);
-    };
-
-    const switchToMainView = () => {
-        setEditting(false);
-    };
-
-    return (
-        <>
-            {editting ? (
-                <AddDepartment handleView={switchToMainView} />
-            ) : (
-                <DepartmentMainView handleView={switchToAddView} />
-            )}
-        </>
-    );
-};
-
-const DepartmentMainView = ({ handleView }) => {
     return (
         <>
             <Grid container sx={{ mb: 2 }}>

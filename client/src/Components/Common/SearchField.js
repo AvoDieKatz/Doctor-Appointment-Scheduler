@@ -6,7 +6,7 @@ const SearchField = () => {
     return (
         <TextField
             fullWidth
-            placeholder="Search Department"
+            placeholder="Search..."
             size="small"
             autoComplete="off"
             InputProps={{

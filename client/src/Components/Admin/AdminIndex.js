@@ -7,5 +7,7 @@ export { default as EditDepartment } from "./DepartmentComponents/EditDepartment
 
 export { default as DoctorControlView } from "./AdminLayout/DoctorControlView";
 export { default as DoctorTable } from "./DoctorComponents/DoctorTable";
+export { default as AddDoctor } from "./DoctorComponents/AddDoctor";
+export { default as EditDoctor } from "./DoctorComponents/EditDoctor";
 
 export { default as AppointmentControlView } from "./AdminLayout/AppointmentControlView";

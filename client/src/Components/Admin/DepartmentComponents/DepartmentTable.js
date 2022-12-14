@@ -154,7 +154,6 @@ const DataTable = () => {
                 {...selectedDept}
                 open={showDeleteDialog}
                 handleClose={handleCloseDeleteView}
-                // department={selectedDept}
             />
         </>
     );
