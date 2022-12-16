@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Appointment;
 use App\Repository\AppointmentRepository;
 use App\Repository\DepartmentRepository;
+use App\Repository\DoctorRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/api/appointments', name: 'api_appointments_')]
 class AppointmentController extends AbstractController
@@ -36,15 +38,15 @@ class AppointmentController extends AbstractController
         foreach ($appointments as $appointment) {
             $data[] = [
                 'id' => $appointment->getId(),
-                'patient_name' => $appointment->getPatientName(),
-                'patient_gender' => $appointment->getPatientGender(),
-                'patient_dob' => $appointment->getPatientDob(),
+                'patientName' => $appointment->getPatientName(),
+                'patientGender' => $appointment->getPatientGender(),
+                'patientDob' => $appointment->getPatientDob(),
+                'patientMessage' => $appointment->getPatientMessage(),
+                'patientContact' => $appointment->getContact(),
+                'scheduledDate' => $appointment->getDate(),
+                'isDone' => $appointment->isDone(),
+                'department' => $appointment->getPatientDepartment()->getName(),
                 'doctor' => $appointment->getDoctor()->getName(),
-                'patient_department' => $appointment->getPatientDepartment()->getName(),
-                'patient_message' => $appointment->getPatientMessage(),
-                'scheduled_date' => $appointment->getDate(),
-                'patient_contact' => $appointment->getContact(),
-                'isDone' => $appointment->isDone()
             ];
         }
         return $this->json($data);
@@ -68,15 +70,15 @@ class AppointmentController extends AbstractController
         }
         $data = [
             'id' => $appointment->getId(),
-            'patient_name' => $appointment->getPatientName(),
-            'patient_gender' => $appointment->getPatientGender(),
-            'patient_dob' => $appointment->getPatientDob(),
-            'patient_message' => $appointment->getPatientMessage(),
-            'scheduled_date' => $appointment->getDate(),
-            'isDone' => $appointment->isDone(),
-            'patient_department' => $appointment->getPatientDepartment()->getName(),
+            'patientName' => $appointment->getPatientName(),
+            'patientGender' => $appointment->getPatientGender(),
+            'patientDob' => $appointment->getPatientDob(),
+            'patientMessage' => $appointment->getPatientMessage(),
+            'patientContact' => $appointment->getContact(),
+            'scheduledDate' => $appointment->getDate(),
+            'department' => $appointment->getPatientDepartment()->getName(),
             'doctor' => $appointment->getDoctor()->getName(),
-            'patient_contact' => $appointment->getContact(),
+            'isDone' => $appointment->isDone(),
         ];
         return $this->json(
             $data,
@@ -88,12 +90,36 @@ class AppointmentController extends AbstractController
         This route returns all the appointments assigned to a doctor by ID
     */
     // ADMIN AND DOCTOR
-    #[Route('/assigned/doctor/{doctorId}', name: 'view_assigned', methods: 'GET')]
-    //TODO: implement
-    public function viewAppointmentsAssigned($doctorId): JsonResponse
+    #[Route('/assigned/{doctorId}', name: 'view_assigned', methods: 'GET')]
+    public function viewAppointmentsAssigned(DoctorRepository $doctorRepository, $doctorId): JsonResponse
     {
-        return $this->json([]);
+        // Find the doctor
+        $doctor = $doctorRepository->find($doctorId);
+        if (!$doctor) {
+            return $this->json(
+                ['message' => 'The doctor does not exist'],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        // Get all appointments related to the found doctor through Symfony provided method getAppointments() in Doctor Entity class
+        $assigned_appointments = $doctor->getAppointments();
+
+        return $this->json(
+            $assigned_appointments,
+            Response::HTTP_OK,
+            [],
+            [
+                // Ignore some field to not include in the JSON response
+                // We can format the response's data like the two endpoints above but by using IGNORED_ATTRIBUTES, we can do send response easier as we can pass the whole $appointment object directly
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['doctor', 'patientDepartment'],
+                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                }
+            ]
+        );
     }
+
 
     /*
         This route will create a new appointment
@@ -109,7 +135,7 @@ class AppointmentController extends AbstractController
         $data = $request->toArray();
 
         // Find the chosen Department
-        $department = $departmentRepository->find($data['department_id']);
+        $department = $departmentRepository->find($data['departmentId']);
 
         $doctor = null;
 
@@ -118,7 +144,7 @@ class AppointmentController extends AbstractController
             $department_doctors = $department->getDoctors();
             // A loop to iterate all the doctors found in this Department and check if its ID match the ID from client's request
             foreach ($department_doctors as $department_doctor) {
-                if ($department_doctor->getId() === $data['doctor_id']) {
+                if ($department_doctor->getId() === $data['doctorId']) {
                     $doctor = $department_doctor;
                 }
             }
@@ -132,13 +158,14 @@ class AppointmentController extends AbstractController
         }
 
         // If both Department and Doctor are not null, proceed to add to the Appointment object
-        $appointment->setPatientName($data['patient_name'])
+        $appointment->setPatientName($data['patientName'])
             ->setPatientDob(\DateTime::createFromFormat('m/d/Y', $data['dob']))
             ->setPatientGender($data['gender'])
             ->setPatientDepartment($department)
             ->setDoctor($doctor)
-            ->setDate(\DateTime::createFromFormat('m/d/Y', $data['appointed_date']))
-            ->setPatientMessage($data['patient_message'])
+            ->setDate(\DateTime::createFromFormat('m/d/Y', $data['appointedDate']))
+            ->setPatientMessage($data['patientMessage'])
+            ->setContact($data['patientContact'])
             ->setDone(false);
 
         // Let doctrine create a new row in database
