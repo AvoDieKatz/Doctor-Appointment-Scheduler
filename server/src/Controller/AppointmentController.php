@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/api/appointments', name: 'api_appointments_')]
 class AppointmentController extends AbstractController
@@ -28,6 +27,7 @@ class AppointmentController extends AbstractController
     /*
         This route returns all appointments and their attributes
     */
+    // ADMIN ONLY
     #[Route('/', name: 'view_all', methods: 'GET')]
     public function viewAllAppointments()
     {
@@ -43,7 +43,8 @@ class AppointmentController extends AbstractController
                 'patient_department' => $appointment->getPatientDepartment()->getName(),
                 'patient_message' => $appointment->getPatientMessage(),
                 'scheduled_date' => $appointment->getDate(),
-                'isDone' => $appointment->isDone(),
+                'patient_contact' => $appointment->getContact(),
+                'isDone' => $appointment->isDone()
             ];
         }
         return $this->json($data);
@@ -52,12 +53,18 @@ class AppointmentController extends AbstractController
     /*
         This route returns detailed information about the appointment
     */
+    // ADMIN AND DOCTOR
     #[Route('/{appointmentId}', name: 'view_detail', methods: 'GET')]
     public function viewAppointmentDetail($appointmentId): JsonResponse
     {
         $appointment = $this->repository->find($appointmentId);
         if (!$appointment) {
-            throw $this->createNotFoundException('The request appointment does not exist');
+            return $this->json(
+                [
+                    'message' => 'The appointment does not exist'
+                ],
+                Response::HTTP_NOT_FOUND
+            );
         }
         $data = [
             'id' => $appointment->getId(),
@@ -69,22 +76,18 @@ class AppointmentController extends AbstractController
             'isDone' => $appointment->isDone(),
             'patient_department' => $appointment->getPatientDepartment()->getName(),
             'doctor' => $appointment->getDoctor()->getName(),
+            'patient_contact' => $appointment->getContact(),
         ];
         return $this->json(
             $data,
             Response::HTTP_OK,
-            [],
-            [
-                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-                    return $object->getId();
-                }
-            ]
         );
     }
 
     /*
-        This route returns all the appointments assigned to a doctor
+        This route returns all the appointments assigned to a doctor by ID
     */
+    // ADMIN AND DOCTOR
     #[Route('/assigned/doctor/{doctorId}', name: 'view_assigned', methods: 'GET')]
     //TODO: implement
     public function viewAppointmentsAssigned($doctorId): JsonResponse
@@ -92,6 +95,10 @@ class AppointmentController extends AbstractController
         return $this->json([]);
     }
 
+    /*
+        This route will create a new appointment
+    */
+    // PATIENT
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createAppointment(DepartmentRepository $departmentRepository, Request $request): JsonResponse
     {
@@ -140,7 +147,7 @@ class AppointmentController extends AbstractController
 
         return $this->json(
             ['message' => 'The appointment is succesfully created'],
-            Response::HTTP_OK,
+            Response::HTTP_CREATED,
         );
     }
 }

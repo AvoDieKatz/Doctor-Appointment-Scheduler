@@ -40,6 +40,9 @@ class Appointment
     #[ORM\JoinColumn(nullable: false)]
     private ?Department $patient_department = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $contact = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +140,18 @@ class Appointment
     public function setPatientDepartment(?Department $patient_department): self
     {
         $this->patient_department = $patient_department;
+
+        return $this;
+    }
+
+    public function getContact(): ?string
+    {
+        return $this->contact;
+    }
+
+    public function setContact(string $contact): self
+    {
+        $this->contact = $contact;
 
         return $this;
     }

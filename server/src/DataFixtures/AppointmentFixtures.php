@@ -23,6 +23,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientDob(\DateTime::createFromFormat('Y-m-d', '1999-11-19'))
             ->setPatientDepartment($this->getReference(DepartmentFixtures::DEPT2_REF))
             ->setPatientMessage("I dont feel so good.")
+            ->setContact("0921234567")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-12-15'))
             ->setDone(false)
             ->setDoctor($this->getReference(DoctorFixtures::DOC2_REF));
@@ -35,6 +36,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientDob(\DateTime::createFromFormat('Y-m-d', '2014-5-28'))
             ->setPatientDepartment($this->getReference(DepartmentFixtures::DEPT1_REF))
             ->setPatientMessage("My child is having a stomache")
+            ->setContact("0821239872")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-11-30'))
             ->setDone(true)
             ->setDoctor($this->getReference(DoctorFixtures::DOC2_REF));
@@ -47,6 +49,7 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
             ->setPatientDob(\DateTime::createFromFormat('Y-m-d', '2010-11-3'))
             ->setPatientDepartment($this->getReference(DepartmentFixtures::DEPT1_REF))
             ->setPatientMessage("I am not sure")
+            ->setContact("0123498765")
             ->setDate(\DateTime::createFromFormat('Y-m-d', '2022-12-20'))
             ->setDone(false)
             ->setDoctor($this->getReference(DoctorFixtures::DOC1_REF));
