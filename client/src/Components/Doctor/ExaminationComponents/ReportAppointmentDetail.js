@@ -2,9 +2,6 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
-// const arr = ["suv", "sedan", 'sport'];
-// const [ford,,lambo] = vehicles;
-
 const ReportAppointmentDetail = () => {
     const { state: data } = useLocation();
     const { name, gender, age, dept, message } = data;

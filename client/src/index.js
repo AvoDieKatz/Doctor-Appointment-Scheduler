@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NotFoundPage from "./Page/NotFoundPage";
 import PatientPage from "./Page/PatientPage";
 import DoctorPage from "./Page/DoctorPage";
@@ -18,7 +18,8 @@ root.render(
                     <Route index element={<PatientPage />} />
                     <Route path="doctor/*" element={<DoctorPage />} />
                     <Route path="admin/*" element={<AdminPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/not-found" element={<NotFoundPage />} />
+                    <Route path="*" element={<Navigate to="/not-found" />} />
                 </Route>
             </Routes>
         </BrowserRouter>

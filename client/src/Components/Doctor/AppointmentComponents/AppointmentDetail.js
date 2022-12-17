@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Typography, Button } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AppointmentDetail = () => {
+
+    // when the API is ready, we use useParams() hook fromm react-router-dom to fetch data instead
+    // if the response is 404 use useNavigate() hook to navigate user to not-found page
+
     const { state: data } = useLocation();
     const { name, gender, age, contact, dept, message } = data;
+
+    // const navigate = useNavigate();
+    // const {id} = useParams()
+    // useEffect(() => {
+    //     // API CALL GET DETAIL HERE
+    //         navigate("/not-found")
+    // },[])
+    
 
     return (
         <Grid

@@ -16,15 +16,10 @@ const View = () => {
                     <Route path="/" element={<AppointmentsView />}>
                         <Route index element={<DoctorHome />} />
                         <Route path="appointments" element={<Navigate to="/doctor" />} />
-                        <Route
-                            path="appointments/:id"
-                            element={<AppointmentDetail />}
-                        />
+                        <Route path="appointments/:id" element={<AppointmentDetail />} />
+                        <Route path="appointments/:id/examination" element={<ExaminationView />} />
+                        <Route path="*" element={<Navigate to="/not-found" />} />
                     </Route>
-                    <Route
-                        path="appointments/:id/examination"
-                        element={<ExaminationView />}
-                    />
                     <Route path="*" element={<Navigate to="/not-found" />} />
                 </Route>
             </Routes>
