@@ -1,14 +1,17 @@
-import { Grid, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import React, { useState } from "react";
+import { Grid, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { AppointmentTable } from "../AdminIndex";
 import { SearchField } from "../../Common/CommonIndex";
 
 const AppointmentControlView = () => {
-    const [sortType, setSortType] = useState("waiting");
+    // CAN RUN API CALL APPOINTMENT HISTORY HERE
+    // RERENDER ON filterType STATE
+    // USE MYSQL ORDER BY TO SORT DATE DESC
+
+    const [filterType, setFilterType] = useState("all");
 
     const handleChange = (event, type) => {
-        console.log(event);
-        setSortType(type);
+        setFilterType(type);
     };
     return (
         <>
@@ -16,14 +19,15 @@ const AppointmentControlView = () => {
                 <Grid sx={{ mr: "2rem" }}>
                     <ToggleButtonGroup
                         color="primary"
-                        value={sortType}
+                        value={filterType}
                         exclusive
                         onChange={handleChange}
-                        aria-label="Platform"
+                        aria-label="Filter appointments"
+                        size="small"
                     >
+                        <ToggleButton value="all">History</ToggleButton>
                         <ToggleButton value="waiting">Waiting</ToggleButton>
                         <ToggleButton value="completed">Completed</ToggleButton>
-                        <ToggleButton value="all">History</ToggleButton>
                     </ToggleButtonGroup>
                 </Grid>
                 <Grid sx={{ flexGrow: 1 }}>

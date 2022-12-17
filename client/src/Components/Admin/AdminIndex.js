@@ -12,3 +12,4 @@ export { default as EditDoctor } from "./DoctorComponents/EditDoctor";
 
 export { default as AppointmentControlView } from "./AdminLayout/AppointmentControlView";
 export { default as AppointmentTable } from "./AppointmentComponents/AppointmentTable";
+export { default as Appointment } from "./AppointmentComponents/Appointment";
