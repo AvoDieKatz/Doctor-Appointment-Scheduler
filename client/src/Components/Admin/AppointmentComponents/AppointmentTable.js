@@ -3,7 +3,9 @@ import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
-const DataTable = () => {
+const DataTable = ({filterType}) => {
+    // if filterType === "all"/"waiting"/"completed" call the corresponding endpoint
+    
     const columns = [
         {
             field: "id",

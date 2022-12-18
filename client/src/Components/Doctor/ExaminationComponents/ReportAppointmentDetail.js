@@ -17,19 +17,29 @@ const ReportAppointmentDetail = () => {
             }}
         >
             <Grid>
-                <Typography>Name: {name}</Typography>
+                <Typography>
+                    Name: <span>{name}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Gender: {gender}</Typography>
+                <Typography>
+                    Gender: <span>{gender}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Age: {age}</Typography>
+                <Typography>
+                    Age: <span>{age}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Check for: {dept}</Typography>
+                <Typography>
+                    Check up in: <span>{dept}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Message: {message}</Typography>
+                <Typography>
+                    Message: <span>{message}</span>
+                </Typography>
             </Grid>
         </Grid>
     );

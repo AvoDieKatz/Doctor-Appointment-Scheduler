@@ -41,7 +41,7 @@ const AppointmentDetail = () => {
                 <Typography>Age: {age}</Typography>
             </Grid>
             <Grid>
-                <Typography>Check up for: {dept}</Typography>
+                <Typography>Check up in: {dept}</Typography>
             </Grid>
             <Grid sx={{ flexGrow: 1 }}>
                 <Typography>Patient's message: {message}</Typography>
