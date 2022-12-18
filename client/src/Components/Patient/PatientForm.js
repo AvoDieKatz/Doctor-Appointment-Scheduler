@@ -22,12 +22,28 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 const schema = yup.object({
-    fullname: yup.string().required(),
-    dob: yup.date().required(),
-    gender: yup.string().required(),
-    phone_number: yup.number().required(),
-    department: yup.string().required(),
-    appointment_date: yup.date().required(),
+    fullname: yup.string().required("Field is required"),
+    dob: yup
+        .date()
+        .max(new Date(), "Can't be after today")
+        .nullable()
+        .typeError("Invalid Date")
+        .required("Field is required"),
+    gender: yup.string().required("Field is required"),
+    phone_number: yup
+        .string()
+        .matches(
+            /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/,
+            "Invalid phone number"
+        )
+        .required("Field is required"),
+    department: yup.string().required("Field is required"),
+    appointment_date: yup
+        .date()
+        .min(new Date(), "Can't be before today")
+        .nullable()
+        .typeError("Invalid Date")
+        .required("Field is required"),
 });
 
 const PatientForm = () => {
@@ -47,6 +63,7 @@ const PatientForm = () => {
         <Container>
             <Grid container>
                 <Grid
+                    item
                     xs={12}
                     display="flex"
                     justifyContent="center"
@@ -78,7 +95,7 @@ const PatientForm = () => {
                             autoComplete="off"
                             onSubmit={handleSubmit(onSubmit)}
                         >
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="fullname"
@@ -99,7 +116,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="dob"
@@ -130,7 +147,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="gender"
@@ -172,7 +189,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="phone_number"
@@ -193,7 +210,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="department"
@@ -225,7 +242,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Controller
                                     control={control}
                                     name="appointment_date"
@@ -256,7 +273,7 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <TextField
                                     multiline
                                     rows={4}

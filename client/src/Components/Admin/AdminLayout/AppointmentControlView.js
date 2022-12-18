@@ -13,6 +13,7 @@ const AppointmentControlView = () => {
     const handleChange = (event, type) => {
         setFilterType(type);
     };
+
     return (
         <>
             <Grid container sx={{ mb: 2 }}>
@@ -35,7 +36,7 @@ const AppointmentControlView = () => {
                 </Grid>
             </Grid>
             <Grid container>
-                <AppointmentTable />
+                <AppointmentTable filterType={filterType}/>
             </Grid>
         </>
     );

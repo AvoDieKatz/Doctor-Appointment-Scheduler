@@ -24,24 +24,23 @@ const DeleteDialog = (props) => {
         <Dialog
             open={open}
             onClose={handleClose}
+            fullWidth={true}
+            maxWidth="xs"
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                Delete Doctor ID: {id}, name: {doctor_name} in 
-                {doctor_department} department
+                Delete Doctor ?
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Let Google help apps determine location. This means sending
-                    anonymous location data to Google, even when no apps are
-                    running.
+                    Delete doctor {doctor_name} (ID: {id}) from department {doctor_department}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleDelete} autoFocus>
-                    Agree
+                <Button onClick={handleClose}>Cancle</Button>
+                <Button onClick={handleDelete} autoFocus className="danger">
+                    Delete
                 </Button>
             </DialogActions>
         </Dialog>

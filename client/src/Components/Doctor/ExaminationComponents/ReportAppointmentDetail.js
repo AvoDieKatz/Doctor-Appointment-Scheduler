@@ -2,9 +2,6 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
-// const arr = ["suv", "sedan", 'sport'];
-// const [ford,,lambo] = vehicles;
-
 const ReportAppointmentDetail = () => {
     const { state: data } = useLocation();
     const { name, gender, age, dept, message } = data;
@@ -20,19 +17,29 @@ const ReportAppointmentDetail = () => {
             }}
         >
             <Grid>
-                <Typography>Name: {name}</Typography>
+                <Typography>
+                    Name: <span>{name}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Gender: {gender}</Typography>
+                <Typography>
+                    Gender: <span>{gender}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Age: {age}</Typography>
+                <Typography>
+                    Age: <span>{age}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Check for: {dept}</Typography>
+                <Typography>
+                    Check up in: <span>{dept}</span>
+                </Typography>
             </Grid>
             <Grid>
-                <Typography>Message: {message}</Typography>
+                <Typography>
+                    Message: <span>{message}</span>
+                </Typography>
             </Grid>
         </Grid>
     );
