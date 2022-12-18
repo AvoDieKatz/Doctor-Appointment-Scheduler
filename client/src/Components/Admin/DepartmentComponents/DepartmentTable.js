@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 const DeleteDialog = (props) => {
-    const { id, department_name, department_doctor_num, open, handleClose } =
+    const { id, department_name, open, handleClose } =
         props;
 
     const handleDelete = () => {
@@ -25,24 +25,23 @@ const DeleteDialog = (props) => {
         <Dialog
             open={open}
             onClose={handleClose}
+            fullWidth={true}
+            maxWidth="xs"
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                Delete Department ID: {id}, name: {department_name} with{" "}
-                {department_doctor_num} doctors
+                Delete Department ?
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Let Google help apps determine location. This means sending
-                    anonymous location data to Google, even when no apps are
-                    running.
+                Delete department {department_name} (ID: {id})
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleDelete} autoFocus>
-                    Agree
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleDelete} autoFocus className="danger">
+                    Delete
                 </Button>
             </DialogActions>
         </Dialog>
