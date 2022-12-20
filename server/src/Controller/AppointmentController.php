@@ -135,24 +135,27 @@ class AppointmentController extends AbstractController
         $data = $request->toArray();
 
         // Find the chosen Department
-        $department = $departmentRepository->find($data['departmentId']);
+        $department = $departmentRepository->findOneBy(['id' => $data['departmentId'], 'deleted' => false]);
 
         $doctor = null;
 
-        if ($department != null) {
+        if ($department) {
             // Get all the doctors belong to that department, this will return an array of
             $department_doctors = $department->getDoctors();
-            // A loop to iterate all the doctors found in this Department and check if its ID match the ID from client's request
+            // A loop to iterate all the doctors found in this Department
+            // and check if its ID match the ID from client's request
+            // also check if the doctor is deleted
             foreach ($department_doctors as $department_doctor) {
-                if ($department_doctor->getId() === $data['doctorId']) {
+                if ($department_doctor->getId() === $data['doctorId'] && $department_doctor->isDeleted() === false) {
                     $doctor = $department_doctor;
                 }
             }
         }
 
         // Because if the department is null, it will pass the previous 'if', the doctor variable will not be updated, therefore this 'if' will run
-        if ($doctor == null) {
+        if (!$doctor) {
             return $this->json(
+                ['message' => 'Bad request'],
                 Response::HTTP_BAD_REQUEST
             );
         }
