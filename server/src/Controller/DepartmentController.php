@@ -57,14 +57,22 @@ class DepartmentController extends AbstractController
     #[Route('/{departmentId}', name: 'view_detail', methods: 'GET')]
     public function viewDepartmentDetail($departmentId): JsonResponse
     {
-        $department = $this->repository->find($departmentId);
+        $department = $this->repository->findOneBy(['id' => $departmentId, 'deleted' => false]);
         if (!$department) {
-            throw $this->createNotFoundException('The requested department does not exist');
+            return $this->json(
+                [
+                    'message' => 'The requested department does not exist',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
         }
         $data = [
-            'id' => $department->getId(), 
+            'id' => $department->getId(),
             'name' => $department->getName(),
-            'doctors' => $department->getDoctors()
+            // filter out all of the non-deleted doctors collection
+            'doctors' => $department->getDoctors()->filter(function ($e) {
+                return $e->isDeleted() === false;
+            })
         ];
         return $this->json(
             $data,
@@ -72,7 +80,7 @@ class DepartmentController extends AbstractController
             [],
             [
                 //Ignore the unwanted attributes inside associated attributes
-                ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments'],
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments', 'deleted'],
                 ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                     return $object->getId();
                 }
