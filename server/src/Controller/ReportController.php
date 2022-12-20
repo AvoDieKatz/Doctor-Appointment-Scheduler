@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Appointment;
 use App\Entity\Report;
 use App\Repository\AppointmentRepository;
 use App\Repository\ReportRepository;
@@ -12,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/api/reports', name: 'api_report_')]
 
@@ -24,6 +24,23 @@ class ReportController extends AbstractController
     {
         $this->repository = $reportRepository;
         $this->manager = $managerRegistry->getManager();
+    }
+
+    #[Route('/{id}', name: 'view_detail', methods: 'GET')]
+    public function viewReport($id)
+    {
+        $report = $this->repository->findOneBy(['appointment' => $id]);
+        if (!$report) {
+            return $this->json(['message' => 'The report does not exist'], Response::HTTP_NOT_FOUND);
+        }
+        return $this->json(
+            $report, 
+            Response::HTTP_OK, 
+            [], 
+            [
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['appointmentId']
+            ]
+        );
     }
 
     #[Route('/create', name: 'create', methods: 'POST')]
@@ -54,10 +71,10 @@ class ReportController extends AbstractController
             ->setCreatedAt(new \DateTime());
         // Update the isDone status in Appointment
         $appointment->setDone(true);
-            
+
         $this->manager->persist($report);
         $this->manager->flush();
-            
+
         return $this->json(['message' => 'A report is successfully created'], Response::HTTP_CREATED);
     }
 
