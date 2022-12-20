@@ -29,7 +29,8 @@ class DepartmentController extends AbstractController
     #[Route('/', name: 'view_all', methods: 'GET')]
     public function viewAllDepartments(): JsonResponse
     {
-        $departments = $this->repository->findAll();
+        // $departments = $this->repository->findAll();
+        $departments = $this->repository->findBy(['deleted' => false]);
         $data = [];
         foreach ($departments as $department) {
             $data[] = [
