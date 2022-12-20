@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Department;
 use App\Repository\DepartmentRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -89,10 +90,20 @@ class DepartmentController extends AbstractController
     }
 
     #[Route('/create', name: 'create', methods: 'POST')]
-    //TODO: implement
-    public function createDepartment(): JsonResponse
+    public function createDepartment(Request $request): JsonResponse
     {
-        return $this->json([]);
+        $department = new Department();
+        $data = $request->toArray();
+        $department->setName($data['name'])
+            ->setDeleted(false);
+        $this->manager->persist($department);
+        $this->manager->flush();
+        return $this->json(
+            [
+                'message' => 'A new department is created'
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     #[Route('/{departmentId}/update', name: 'update', methods: 'PUT')]
