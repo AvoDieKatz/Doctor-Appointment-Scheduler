@@ -24,6 +24,9 @@ class Department
     #[ORM\OneToMany(mappedBy: 'patient_department', targetEntity: Appointment::class)]
     private Collection $appointments;
 
+    #[ORM\Column]
+    private ?bool $deleted = null;
+
     public function __construct()
     {
         $this->doctors = new ArrayCollection();
@@ -103,6 +106,18 @@ class Department
                 $appointment->setPatientDepartment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

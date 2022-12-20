@@ -14,9 +14,6 @@ class Report
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datetime = null;
-
     #[ORM\Column]
     private ?int $blood_pressure = null;
 
@@ -33,21 +30,12 @@ class Report
     #[ORM\JoinColumn(nullable: false)]
     private ?Appointment $appointment = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDatetime(): ?\DateTimeInterface
-    {
-        return $this->datetime;
-    }
-
-    public function setDatetime(\DateTimeInterface $datetime): self
-    {
-        $this->datetime = $datetime;
-
-        return $this;
     }
 
     public function getBloodPressure(): ?int
@@ -106,6 +94,18 @@ class Report
     public function setAppointmentId(Appointment $appointment): self
     {
         $this->appointment = $appointment;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
