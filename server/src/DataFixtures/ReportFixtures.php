@@ -13,7 +13,7 @@ class ReportFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $report1 = new Report();
-        $report1->setDatetime(\DateTime::createFromFormat('Y-m-d H:i:s', '2022-11-30 15:35:14'))
+        $report1->setCreatedAt(\DateTime::createFromFormat('Y-m-d H:i:s', '2022-11-30 15:35:14'))
             ->setBloodPressure(118)
             ->setOxygen(99)
             ->setWeight(45)
