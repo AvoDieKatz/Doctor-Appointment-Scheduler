@@ -27,13 +27,26 @@ class AppointmentController extends AbstractController
     }
 
     /*
-        This route returns all appointments and their attributes
+        This route returns all, waitting or completed appointments based on query string
     */
     // ADMIN ONLY
     #[Route('/', name: 'view_all', methods: 'GET')]
-    public function viewAllAppointments()
+    public function viewAllAppointments(Request $request)
     {
         $appointments = $this->repository->findAll();
+        //Get the query component
+        $filterType = $request->query->get('filter');
+        if ($filterType === "waiting") {
+            $appointments = $this->repository->findBy(['done' => false]);
+        } elseif ($filterType === "completed") {
+            $appointments = $this->repository->findBy(['done' => true]);
+        }
+        if (!$appointments) {
+            return $this->json(
+                [],
+                Response::HTTP_NO_CONTENT
+            );
+        }
         $data = [];
         foreach ($appointments as $appointment) {
             $data[] = [
@@ -65,7 +78,7 @@ class AppointmentController extends AbstractController
                 [
                     'message' => 'The appointment does not exist'
                 ],
-                Response::HTTP_NOT_FOUND
+                Response::HTTP_NO_CONTENT
             );
         }
         $data = [
