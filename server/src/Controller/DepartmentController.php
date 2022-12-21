@@ -135,6 +135,16 @@ class DepartmentController extends AbstractController
                 'message' => 'Department does not exist'
             ], Response::HTTP_BAD_REQUEST);
         }
+        // Check if any doctors inside intended to delete department
+        $isDepartmentEmpty = $department->getDoctors()->isEmpty();
+        if ($isDepartmentEmpty === false) {
+            return $this->json(
+                [
+                    'message' => 'Department still have doctors! Reattribute or remove them before delete.'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
         $department->setDeleted(true);
         $this->manager->flush();
         return $this->json(
