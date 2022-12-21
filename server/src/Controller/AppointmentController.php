@@ -7,6 +7,8 @@ use App\Repository\AppointmentRepository;
 use App\Repository\DepartmentRepository;
 use App\Repository\DoctorRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +31,7 @@ class AppointmentController extends AbstractController
     /*
         This route returns all, waitting or completed appointments based on query string
     */
-    // ADMIN ONLY
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/', name: 'view_all', methods: 'GET')]
     public function viewAllAppointments(Request $request)
     {
@@ -68,7 +70,7 @@ class AppointmentController extends AbstractController
     /*
         This route returns detailed information about the appointment
     */
-    // ADMIN AND DOCTOR
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOCTOR')")]
     #[Route('/{appointmentId}', name: 'view_detail', methods: 'GET')]
     public function viewAppointmentDetail($appointmentId): JsonResponse
     {
@@ -102,7 +104,7 @@ class AppointmentController extends AbstractController
     /*
         This route returns all the appointments assigned to a doctor by ID
     */
-    // ADMIN AND DOCTOR
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOCTOR')")]
     #[Route('/assigned/{doctorId}', name: 'view_assigned', methods: 'GET')]
     public function viewAppointmentsAssigned(DoctorRepository $doctorRepository, $doctorId): JsonResponse
     {
@@ -137,7 +139,6 @@ class AppointmentController extends AbstractController
     /*
         This route will create a new appointment
     */
-    // PATIENT
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createAppointment(DepartmentRepository $departmentRepository, Request $request): JsonResponse
     {

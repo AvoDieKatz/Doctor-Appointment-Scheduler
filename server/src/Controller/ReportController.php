@@ -6,6 +6,8 @@ use App\Entity\Report;
 use App\Repository\AppointmentRepository;
 use App\Repository\ReportRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,12 +28,13 @@ class ReportController extends AbstractController
         $this->manager = $managerRegistry->getManager();
     }
 
-    #[Route('/{id}', name: 'view_detail', methods: 'GET')]
-    public function viewReport($id)
+    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOCTOR')")]
+    #[Route('/{appointmentId}', name: 'view_detail', methods: 'GET')]
+    public function viewReport($appointmentId)
     {
-        $report = $this->repository->findOneBy(['appointment' => $id]);
+        $report = $this->repository->findOneBy(['appointment' => $appointmentId]);
         if (!$report) {
-            return $this->json(['message' => 'The report does not exist'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'The report does not exist'], Response::HTTP_NO_CONTENT);
         }
         return $this->json(
             $report, 
@@ -43,6 +46,7 @@ class ReportController extends AbstractController
         );
     }
 
+    #[IsGranted('ROLE_DOCTOR')]
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createReport(AppointmentRepository $appointmentRepository, Request $request): JsonResponse
     {
@@ -78,9 +82,4 @@ class ReportController extends AbstractController
         return $this->json(['message' => 'A report is successfully created'], Response::HTTP_CREATED);
     }
 
-    #[Route('/update/{appointmentId}', name: 'update', methods: 'PUT')]
-    public function updateReport($appointmentId): JsonResponse
-    {
-        return $this->json([]);
-    }
 }
