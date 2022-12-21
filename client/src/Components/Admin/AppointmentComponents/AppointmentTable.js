@@ -3,8 +3,8 @@ import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
-const DataTable = ({filterType}) => {
-    // if filterType === "all"/"waiting"/"completed" call the corresponding endpoint
+const DataTable = () => {
+    // if filterType in params === "all"/"waiting"/"completed" call the corresponding endpoint
     
     const columns = [
         {
@@ -157,6 +157,17 @@ const DataTable = ({filterType}) => {
                     showCellRightBorder={true}
                     showColumnRightBorder={true}
                     density="compact"
+                    initialState={{
+                        sorting: {
+                          sortModel: [
+                            {
+                              field: 'appointment_date',
+                              sort: 'desc',
+                            },
+                          ],
+                        },
+                      }}
+                    
                     sx={{
                         "& .table-data-header": {
                             backgroundColor: "primary.main",

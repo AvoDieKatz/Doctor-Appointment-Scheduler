@@ -36,7 +36,7 @@ const AppointmentControlView = () => {
                 </Grid>
             </Grid>
             <Grid container>
-                <AppointmentTable filterType={filterType}/>
+                <AppointmentTable />
             </Grid>
         </>
     );
