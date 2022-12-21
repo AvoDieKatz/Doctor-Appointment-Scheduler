@@ -106,11 +106,24 @@ class DepartmentController extends AbstractController
         );
     }
 
-    #[Route('/{departmentId}/update', name: 'update', methods: 'PUT')]
-    //TODO: implement
-    public function updateDepartment(): JsonResponse
+    #[Route('/{departmentId}', name: 'update', methods: 'PUT')]
+    public function updateDepartment($departmentId, Request $request): JsonResponse
     {
-        return $this->json([]);
+        $department = $this->repository->findOneBy(['id' => $departmentId, 'deleted' => false]);
+        if (!$department) {
+            return $this->json([
+                'message' => 'Department does not exist'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $data = $request->toArray();
+        $department->setName($data['name']);
+        $this->manager->flush();
+        return $this->json(
+            [
+                'message' => 'Department has been updated'
+            ],
+            Response::HTTP_OK
+        );
     }
 
     #[Route('/{departmentId}/delete', name: 'delete', methods: 'DELETE')]
