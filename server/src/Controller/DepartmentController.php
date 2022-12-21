@@ -126,10 +126,22 @@ class DepartmentController extends AbstractController
         );
     }
 
-    #[Route('/{departmentId}/delete', name: 'delete', methods: 'DELETE')]
-    //TODO: implement
-    public function deleteDepartment(): JsonResponse
+    #[Route('/{departmentId}', name: 'delete', methods: 'DELETE')]
+    public function deleteDepartment($departmentId): JsonResponse
     {
-        return $this->json([]);
+        $department = $this->repository->findOneBy(['id' => $departmentId, 'deleted' => false]);
+        if (!$department) {
+            return $this->json([
+                'message' => 'Department does not exist'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $department->setDeleted(true);
+        $this->manager->flush();
+        return $this->json(
+            [
+                'message' => 'Department has been deleted'
+            ],
+            Response::HTTP_OK
+        );
     }
 }
