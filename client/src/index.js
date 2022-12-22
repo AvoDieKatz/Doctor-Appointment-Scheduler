@@ -8,20 +8,30 @@ import NotFoundPage from "./Page/NotFoundPage";
 import PatientPage from "./Page/PatientPage";
 import DoctorPage from "./Page/DoctorPage";
 import AdminPage from "./Page/AdminPage";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import LoginForm from "./Components/Authentication/LoginForm";
+import { AuthProvider } from "./context/AuthProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<App />}>
-                    <Route index element={<PatientPage />} />
-                    <Route path="doctor/*" element={<DoctorPage />} />
-                    <Route path="admin/*" element={<AdminPage />} />
-                    <Route path="/not-found" element={<NotFoundPage />} />
-                    <Route path="*" element={<Navigate to="/not-found" />} />
-                </Route>
-            </Routes>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/" element={<App />}>
+                        <Route index element={<PatientPage />} />
+                        <Route element={<ProtectedRoutes allowedRoles={['ROLE_DOCTOR']} />}>
+                            <Route path="doctor/*" element={<DoctorPage />} />
+                        </Route>
+                        <Route element={<ProtectedRoutes allowedRoles={['ROLE_ADMIN']}/>}>
+                            <Route path="admin/*" element={<AdminPage />} />
+                        </Route>
+                        <Route path="/authenticate" element={<LoginForm />} />
+                        <Route path="/not-found" element={<NotFoundPage />} />
+                        <Route path="*" element={<Navigate to="/not-found" />} />
+                    </Route>
+                </Routes>
+            </AuthProvider>
         </BrowserRouter>
     </React.StrictMode>
 );

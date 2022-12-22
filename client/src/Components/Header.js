@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Toolbar, Typography, Button } from "@mui/material";
+import { Box, Toolbar, Typography } from "@mui/material";
 
-const Header = ({ user }) => {
+const Header = () => {
     return (
         <Box sx={{ flex: "0 1 auto" }} className="green-background">
             <Toolbar>
@@ -12,16 +12,9 @@ const Header = ({ user }) => {
                 >
                     Doctor Portal
                 </Typography>
-
-                {user == null ? (
-                    <Button color="inherit" sx={{ color: "primary.text" }}>
-                        Login
-                    </Button>
-                ) : (
-                    <Typography color="primary.text">
-                        You are logged in as {user}
-                    </Typography>
-                )}
+                <Typography color="primary.text">
+                    You are logged in as #
+                </Typography>
             </Toolbar>
         </Box>
     );

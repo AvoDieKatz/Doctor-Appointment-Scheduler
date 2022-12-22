@@ -16,10 +16,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import api from "../../utils/api";
 
 const schema = yup.object({
     username: yup.string().required("Please enter your username"),
-    password: yup.string().required("Please enter your password").min(8),
+    // password: yup.string().required("Please enter your password").min(8),
+    password: yup.string().required("Please enter your password"),
 });
 
 const PasswordField = ({
@@ -65,27 +67,36 @@ const PasswordField = ({
     );
 };
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = () => {
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema),
+        defaultValues: {
+            username: "",
+            password: "",
+        },
     });
 
     const onSubmit = (data) => {
-        console.log(data);
-    };
-
-    const handleSetUser = (user) => {
-        setUser(user);
+        //have to decode JWT here before saving it into useAuth()
+        console.log("data sending: ", data);
+        const request = {
+            username: data.username,
+            password: data.password,
+        };
+        api.post("/api/login", request)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     return (
         <Container sx={{ marginTop: "32px" }}>
-            <Button value="Tung" onClick={(e) => handleSetUser(e.target.value)}>
-                Set User Tung
-            </Button>
-            <Button onClick={(e) => handleSetUser(null)}>Log out</Button>
             <Grid container>
                 <Grid
+                    item
                     xs
                     display="flex"
                     justifyContent="center"
