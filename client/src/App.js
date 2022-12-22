@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import "./App.css";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
@@ -52,14 +52,13 @@ const cache = createCache({
 });
 
 function App() {
-    const [user, setUser] = useState(null);
 
     return (
         <div id="App">
             <CacheProvider value={cache}>
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider theme={theme}>
-                        <Header user={user} />
+                        <Header />
                         <Container id="content">
                             <Grid
                                 container
