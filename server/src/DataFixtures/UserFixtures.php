@@ -28,13 +28,6 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $user1 = new User();
-        $user1->setUsername('nguyenvana')
-            ->setPassword($this->hasher->hashPassword($user1, "123456"))
-            ->setRoles([]);
-        $manager->persist($user1);
-        $this->addReference(self::USER1_REF, $user1);
-
         $user2 = new User();
         $user2->setUsername('admin')
             ->setPassword($this->hasher->hashPassword($user2, "admin"))
@@ -48,13 +41,6 @@ class UserFixtures extends Fixture
             ->setRoles(['ROLE_DOCTOR']);
         $manager->persist($user3);
         $this->addReference(self::USER3_REF, $user3);
-
-        $user4 = new User();
-        $user4->setUsername('nguyenvanc')
-            ->setPassword($this->hasher->hashPassword($user4, "654321"))
-            ->setRoles([]);
-        $manager->persist($user4);
-        $this->addReference(self::USER4_REF, $user4);
 
         $user5 = new User();
         $user5->setUsername('vuvand')
