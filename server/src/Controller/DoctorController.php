@@ -34,6 +34,7 @@ class DoctorController extends AbstractController
         foreach ($doctors as $doctor) {
             $data[] = [
                 'id' => $doctor->getId(),
+                'departmentId' => $doctor->getDepartment()->getId(),
                 'name' => $doctor->getName(),
                 'department' => $doctor->getDepartment()->getName()
             ];
@@ -58,6 +59,7 @@ class DoctorController extends AbstractController
         }
         $data = [
             'id' => $doctor->getID(),
+            'departmentId' => $doctor->getDepartment()->getId(),
             'name' => $doctor->getName(),
             'department' => $doctor->getDepartment()->getName(),
 

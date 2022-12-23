@@ -35,20 +35,35 @@ const View = () => {
                         <Route element={<StaffLayout />}>
                             <Route index element={<AdminHome />} />
                             <Route path="appointments">
-                                <Route index element={<AppointmentControlView />} />
+                                <Route
+                                    index
+                                    element={<AppointmentControlView />}
+                                />
                                 <Route path=":id" element={<Appointment />} />
                             </Route>
                             <Route path="doctors">
                                 <Route index element={<DoctorControlView />} />
                                 <Route path="add" element={<AddDoctor />} />
-                                <Route path=":id/update" element={<EditDoctor />} />
+                                <Route
+                                    path=":id/update"
+                                    element={<EditDoctor />}
+                                />
                             </Route>
                             <Route path="departments">
-                                <Route index element={<DepartmentControlView />} />
+                                <Route
+                                    index
+                                    element={<DepartmentControlView />}
+                                />
                                 <Route path="add" element={<AddDepartment />} />
-                                <Route path=":id/update" element={<EditDepartment />} />
+                                <Route
+                                    path=":id/update"
+                                    element={<EditDepartment />}
+                                />
                             </Route>
-                            <Route path="*" element={<Navigate to="/not-found" />} />
+                            <Route
+                                path="*"
+                                element={<Navigate to="/not-found" />}
+                            />
                         </Route>
                     </Routes>
                 </Grid>

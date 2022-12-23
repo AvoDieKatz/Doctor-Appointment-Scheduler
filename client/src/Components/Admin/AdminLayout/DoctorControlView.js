@@ -4,6 +4,7 @@ import { DoctorTable } from "../AdminIndex";
 import { AddButton, SearchField } from "../../Common/CommonIndex";
 
 const DoctorControlView = () => {
+
     return (
         <>
             <Grid container sx={{ mb: 2 }}>

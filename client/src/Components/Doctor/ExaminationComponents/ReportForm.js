@@ -3,7 +3,9 @@ import { Grid, Box, TextField, Button } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../utils/api";
+import { useAlert } from "../../../context/AlertContext";
 
 const reportSchema = yup.object({
     blood: yup
@@ -26,19 +28,37 @@ const reportSchema = yup.object({
 
 const ReportForm = () => {
     const navigate = useNavigate();
-    
+    const { id } = useParams();
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
+
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(reportSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
-        navigate("/doctor")
+    const onSubmit = async (data) => {
+        const request = {
+            appointmentId: id,
+            bloodPressure: data.blood,
+            oxygen: data.oxygen,
+            weight: data.weight,
+            message: data.conclusion,
+        };
+        await api
+            .post("/api/reports/create", request)
+            .then((res) => {
+                setMessage("An appointment report has been submitted!");
+                handleSuccess();
+            })
+            .catch((error) => {
+                setMessage("Can't not submit report at the moment!");
+                handleFailure();
+            });
+        navigate("/doctor");
     };
 
     const handleReturn = () => {
         navigate(-1);
-    }
+    };
 
     return (
         <Grid container justifyContent="center">

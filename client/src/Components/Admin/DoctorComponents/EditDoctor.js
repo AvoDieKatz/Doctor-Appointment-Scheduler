@@ -1,10 +1,20 @@
-import React from "react";
-import { Box, Button, Grid, MenuItem, Stack, TextField } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+    Box,
+    Button,
+    Grid,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ReturnButton } from "../../Common/CommonIndex";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAlert } from "../../../context/AlertContext";
+import api from "../../../utils/api";
 
 const doctorSchema = yup.object({
     doctor_name: yup.string().required("Required field"),
@@ -13,6 +23,9 @@ const doctorSchema = yup.object({
 const EditDoctor = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { id } = useParams();
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
+    const [departments, setDepartments] = useState([]);
 
     const {
         control,
@@ -22,25 +35,33 @@ const EditDoctor = () => {
         resolver: yupResolver(doctorSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    useEffect(() => {
+        api.get("/api/departments")
+            .then((response) => {
+                setDepartments(response.data);
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            });
+    }, []);
+
+    const onSubmit = async (data) => {
+        const request = {
+            name: data.doctor_name,
+            departmentId: data.doctor_department,
+        };
+        await api
+            .put(`/api/doctors/${id}`, request)
+            .then((res) => {
+                setMessage(`Doctor ${id} has been updated!`);
+                handleSuccess();
+            })
+            .catch((error) => {
+                setMessage("Can't update doctor at the moment");
+                handleFailure();
+            });
         navigate("/admin/doctors");
     };
-
-    const departments = [
-        {
-            value: "d1",
-            label: "Dept 1",
-        },
-        {
-            value: "d2",
-            label: "Dept 2",
-        },
-        {
-            value: "d3",
-            label: "Dept 3",
-        },
-    ];
 
     return (
         <Grid
@@ -71,13 +92,13 @@ const EditDoctor = () => {
                         <Controller
                             control={control}
                             name="doctor_name"
+                            defaultValue={location.state.doctor_name}
                             render={({
                                 field,
                                 fieldState: { invalid, error },
                             }) => (
                                 <TextField
                                     {...field}
-                                    defaultValue={location.state.doctor_name}
                                     value={field.value}
                                     onChange={field.onChange}
                                     error={invalid}
@@ -90,11 +111,12 @@ const EditDoctor = () => {
                         <Controller
                             control={control}
                             name="doctor_department"
+                            defaultValue={location.state.doctor_departmentId}
                             render={({
                                 field,
                                 fieldState: { invalid, error },
                             }) => (
-                                <TextField
+                                <Select
                                     {...field}
                                     value={field.value}
                                     onChange={field.onChange}
@@ -102,21 +124,17 @@ const EditDoctor = () => {
                                     helperText={error?.message}
                                     required
                                     label="Department"
-                                    select
-                                    defaultValue={
-                                        location.state.department_name
-                                    }
                                     sx={{ mt: 2 }}
                                 >
                                     {departments.map((option) => (
                                         <MenuItem
-                                            key={option.value}
-                                            value={option.value}
+                                            key={option.id}
+                                            value={option.id}
                                         >
-                                            {option.label}
+                                            {option.name}
                                         </MenuItem>
                                     ))}
-                                </TextField>
+                                </Select>
                             )}
                         />
                         <Button

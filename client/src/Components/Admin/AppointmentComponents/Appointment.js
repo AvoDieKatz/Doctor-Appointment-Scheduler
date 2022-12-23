@@ -1,43 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography, Button, Divider } from "@mui/material";
 import ReturnButton from "../../Common/ReturnButton";
+import api from "../../../utils/api";
+import { useParams } from "react-router-dom";
+import { calculateAge, translateGender } from "../../../utils/common";
 
-const Detail = ({ setView }) => {
-    const [data, setData] = useState({
-        name: "Tung",
-        gender: 1,
-        age: 21,
-        contact: "09123182748",
-        dept: "Cardiology",
-        message: "I dont feel good",
-    });
-    const { name, gender, age, contact, dept, message } = data;
+const Detail = (props) => {
+    const {
+        setView,
+        patientName,
+        patientGender,
+        patientDob,
+        patientContact,
+        department,
+        patientMessage,
+        isDone,
+    } = props;
 
     return (
         <>
             <Grid container justifyContent="space-between">
                 <Grid>
-                    <Typography>Patient Name: {name}</Typography>
+                    <Typography>Patient Name: {patientName}</Typography>
                 </Grid>
                 <Grid>
-                    <Typography>Gender: {gender}</Typography>
+                    <Typography>
+                        Gender: {translateGender(patientGender)}
+                    </Typography>
                 </Grid>
             </Grid>
             <Grid>
-                <Typography>Age: {age}</Typography>
+                <Typography>Age: {calculateAge(patientDob)}</Typography>
             </Grid>
             <Grid>
-                <Typography>Check up for: {dept}</Typography>
+                <Typography>Check up for: {department}</Typography>
             </Grid>
             <Grid sx={{ flexGrow: 1 }}>
-                <Typography>Patient's message: {message}</Typography>
+                <Typography>Patient's message: {patientMessage}</Typography>
             </Grid>
             <Grid container justifyContent="space-between">
                 <Grid>
-                    <Typography>Contact: {contact}</Typography>
+                    <Typography>Contact: {patientContact}</Typography>
                 </Grid>
                 <Grid>
-                    <Button onClick={setView} variant="contained">
+                    <Button
+                        disabled={!isDone}
+                        onClick={setView}
+                        variant="contained"
+                    >
                         Examination Report
                     </Button>
                 </Grid>
@@ -46,35 +56,31 @@ const Detail = ({ setView }) => {
     );
 };
 
-const Report = ({ setView }) => {
-    const [data, setData] = useState({
-        doctorName: "Tran Van B",
-        startTime: new Date(new Date("2022-03-25")).toLocaleDateString(),
-        oxygen: 90,
-        bloodPressure: 90,
-        weight: 70,
-        conclusion: "You are pretty good just need a few rest",
-    });
-    const {
-        doctorName,
-        startTime,
-        endTime,
-        oxygen,
-        bloodPressure,
-        weight,
-        conclusion,
-    } = data;
+const Report = ({ setView, doctor }) => {
+    const { id } = useParams();
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+        api.get(`/api/reports/${id}`)
+            .then((res) => {
+                setData(res.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [id]);
+
+    const { createdAt, oxygen, bloodPressure, weight, message } = data;
 
     return (
         <>
             <Grid>
-                <Typography>Examinated by doctor: {doctorName}</Typography>
+                <Typography>Examinated by doctor: {doctor}</Typography>
             </Grid>
             <Grid>
-                <Typography>Time start examination: {startTime}</Typography>
-            </Grid>
-            <Grid>
-                <Typography>Time end examination: {endTime}</Typography>
+                <Typography>
+                    Created at: {new Date(createdAt).toLocaleString("en-GB")}
+                </Typography>
             </Grid>
             <Box component="div">
                 <Divider
@@ -98,7 +104,7 @@ const Report = ({ setView }) => {
             </Grid>
             <Grid sx={{ flexGrow: 1 }}>
                 <Typography>Doctor's conclusion:</Typography>
-                <Typography>{conclusion}</Typography>
+                <Typography>{message}</Typography>
             </Grid>
             <Grid container justifyContent="flex-end">
                 <Grid>
@@ -113,6 +119,18 @@ const Report = ({ setView }) => {
 
 const Appointment = () => {
     const [view, setView] = useState(true);
+    const [data, setData] = useState({});
+    const { id } = useParams();
+
+    useEffect(() => {
+        api.get(`/api/appointments/${id}`)
+            .then((res) => {
+                setData(res.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [id]);
 
     const handleView = () => {
         setView(!view);
@@ -141,9 +159,9 @@ const Appointment = () => {
                     flex="1 1 auto"
                 >
                     {view ? (
-                        <Detail setView={handleView} />
+                        <Detail setView={handleView} {...data} />
                     ) : (
-                        <Report setView={handleView} />
+                        <Report setView={handleView} doctor={data.doctor} />
                     )}
                 </Grid>
             </Grid>

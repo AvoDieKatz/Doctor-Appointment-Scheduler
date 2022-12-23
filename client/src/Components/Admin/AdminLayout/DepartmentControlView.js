@@ -4,6 +4,7 @@ import { DepartmentTable } from "../AdminIndex";
 import { AddButton, SearchField } from "../../Common/CommonIndex";
 
 const DepartmentControlView = () => {
+
     return (
         <>
             <Grid container sx={{ mb: 2 }}>

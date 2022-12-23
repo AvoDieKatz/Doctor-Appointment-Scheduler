@@ -17,57 +17,18 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../../utils/api";
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { setUserSession } from "../../utils/common";
 
 const schema = yup.object({
     username: yup.string().required("Please enter your username"),
-    // password: yup.string().required("Please enter your password").min(8),
     password: yup.string().required("Please enter your password"),
 });
 
-const PasswordField = ({
-    field: { ref, value, onChange, onBlur },
-    fieldState: { invalid, error },
-}) => {
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    return (
-        <TextField
-            inputRef={ref}
-            id="password"
-            label="Password"
-            fullWidth
-            type={showPassword ? "text" : "password"}
-            value={value}
-            onChange={onChange}
-            error={invalid}
-            helperText={error?.message}
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                        >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                    </InputAdornment>
-                ),
-            }}
-        />
-    );
-};
-
 const LoginForm = () => {
+    const navigate = useNavigate();
+
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -77,15 +38,20 @@ const LoginForm = () => {
     });
 
     const onSubmit = (data) => {
-        //have to decode JWT here before saving it into useAuth()
-        console.log("data sending: ", data);
         const request = {
             username: data.username,
             password: data.password,
         };
         api.post("/api/login", request)
             .then((response) => {
-                console.log(response);
+                const token = response.data.token;
+                const token_data = jwt_decode(token);
+                const roles = token_data?.roles;
+                const username = token_data?.username;
+                setUserSession(token, username, roles);
+                navigate(roles[0] === "ROLE_DOCTOR" ? "/doctor" : "/admin", {
+                    replace: true,
+                });
             })
             .catch((error) => {
                 console.log(error);
@@ -172,6 +138,49 @@ const LoginForm = () => {
                 </Grid>
             </Grid>
         </Container>
+    );
+};
+
+export const PasswordField = ({
+    field: { ref, value, onChange, onBlur },
+    fieldState: { invalid, error },
+}) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    return (
+        <TextField
+            inputRef={ref}
+            id="password"
+            label="Password"
+            fullWidth
+            type={showPassword ? "text" : "password"}
+            value={value}
+            onChange={onChange}
+            error={invalid}
+            helperText={error?.message}
+            InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                        <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                        >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                    </InputAdornment>
+                ),
+            }}
+        />
     );
 };
 

@@ -89,6 +89,40 @@ class DepartmentController extends AbstractController
         );
     }
 
+    #[Route('/{departmentId}/doctors', name: 'view_department_doctors', methods: 'GET')]
+    public function viewDepartmentDoctors($departmentId): JsonResponse
+    {
+        $department = $this->repository->findOneBy(['id' => $departmentId, 'deleted' => false]);
+        if (!$department) {
+            return $this->json(
+                [
+                    'message' => 'The requested department does not exist',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+        $doctors = $department->getDoctors()->filter(function ($e) {
+            return $e->isDeleted() === false;
+        });
+        
+        $data = [];
+        foreach ($doctors as $doctor) {
+            $data[] = $doctor;
+        }
+        return $this->json(
+            $data,
+            Response::HTTP_OK,
+            [],
+            [
+                //Ignore the unwanted attributes inside associated attributes
+                ObjectNormalizer::IGNORED_ATTRIBUTES => ['userId', 'department', 'appointments', 'deleted'],
+                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                }
+            ]
+        );
+    }
+
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createDepartment(Request $request): JsonResponse
     {

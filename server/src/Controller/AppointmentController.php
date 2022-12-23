@@ -6,6 +6,7 @@ use App\Entity\Appointment;
 use App\Repository\AppointmentRepository;
 use App\Repository\DepartmentRepository;
 use App\Repository\DoctorRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -105,11 +106,16 @@ class AppointmentController extends AbstractController
         This route returns all the appointments assigned to a doctor by ID
     */
     #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOCTOR')")]
-    #[Route('/assigned/{doctorId}', name: 'view_assigned', methods: 'GET')]
-    public function viewAppointmentsAssigned(DoctorRepository $doctorRepository, $doctorId): JsonResponse
+    #[Route('/assigned/{username}', name: 'view_assigned', methods: 'GET')]
+    public function viewAppointmentsAssigned(DoctorRepository $doctorRepository, UserRepository $userRepository, $username): JsonResponse
     {
+        //Find the user with username
+        $user = $userRepository->findOneBy(['username' => $username]);
+
         // Find the doctor
-        $doctor = $doctorRepository->find($doctorId);
+        $doctor = $doctorRepository->findOneBy(['user' => $user?->getId(), 'deleted' => false]);
+        // FINDONEBY ???
+        // $doctor = $doctorRepository->find($userId);
         if (!$doctor) {
             return $this->json(
                 ['message' => 'The doctor does not exist'],

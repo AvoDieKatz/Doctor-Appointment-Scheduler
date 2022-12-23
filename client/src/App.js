@@ -11,6 +11,9 @@ import { Container, Grid } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import { Outlet } from "react-router-dom";
+import { useAlert } from "./context/AlertContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const theme = createTheme({
     palette: {
@@ -52,12 +55,35 @@ const cache = createCache({
 });
 
 function App() {
+    const { openSuccess, openFailure, message, close } = useAlert();
+    const handleClose = () => {
+        close();
+    };
 
     return (
         <div id="App">
             <CacheProvider value={cache}>
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider theme={theme}>
+                        <Snackbar
+                            open={openSuccess}
+                            autoHideDuration={6000}
+                            onClose={handleClose}
+                        >
+                            <Alert severity="success" sx={{ width: "100%" }}>
+                                {message}
+                            </Alert>
+                        </Snackbar>
+                        <Snackbar
+                            open={openFailure}
+                            autoHideDuration={6000}
+                            onClose={handleClose}
+                        >
+                            <Alert severity="error" sx={{ width: "100%" }}>
+                                {message}
+                            </Alert>
+                        </Snackbar>
+
                         <Header />
                         <Container id="content">
                             <Grid
