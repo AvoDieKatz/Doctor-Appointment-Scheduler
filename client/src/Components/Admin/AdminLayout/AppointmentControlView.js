@@ -26,7 +26,7 @@ const AppointmentControlView = () => {
                         aria-label="Filter appointments"
                         size="small"
                     >
-                        <ToggleButton value="all">History</ToggleButton>
+                        <ToggleButton value="all">All</ToggleButton>
                         <ToggleButton value="waiting">Waiting</ToggleButton>
                         <ToggleButton value="completed">Completed</ToggleButton>
                     </ToggleButtonGroup>
@@ -36,7 +36,7 @@ const AppointmentControlView = () => {
                 </Grid>
             </Grid>
             <Grid container>
-                <AppointmentTable />
+                <AppointmentTable filterType={filterType} />
             </Grid>
         </>
     );

@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+import api from "../../../utils/api";
 
-const DataTable = () => {
-    // if filterType in params === "all"/"waiting"/"completed" call the corresponding endpoint
-    
+const DataTable = ({ filterType }) => {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        api.get("/api/appointments", {
+            params: {
+                filter: filterType,
+            },
+        })
+            .then((res) => {
+                setData(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [filterType]);
+
     const columns = [
         {
             field: "id",
@@ -16,32 +30,32 @@ const DataTable = () => {
             headerClassName: "table-data-header",
         },
         {
-            field: "appointment_patient",
+            field: "patientName",
             headerName: "Patient",
             headerAlign: "center",
             flex: 2,
             headerClassName: "table-data-header",
         },
         {
-            field: "appointment_doctor",
+            field: "doctor",
             headerName: "Assigned Doctor",
             headerAlign: "center",
             flex: 2,
             headerClassName: "table-data-header",
         },
         {
-            field: "appointment_date",
+            field: "scheduledDate",
             headerName: "Scheduled Date",
             type: "date",
             headerAlign: "center",
             flex: 1.5,
             headerClassName: "table-data-header",
             renderCell: (params: GridRenderCellParams<Date>) => (
-                <div>{params.value.toLocaleDateString("en-GB")}</div>
+                <div>{new Date(params.value).toLocaleDateString("en-GB")}</div>
             ),
         },
         {
-            field: "status",
+            field: "isDone",
             headerName: "Status",
             headerAlign: "center",
             headerClassName: "table-data-header",
@@ -70,86 +84,13 @@ const DataTable = () => {
         },
     ];
 
-    const rows = [
-        {
-            id: 1,
-            appointment_patient: "Snow",
-            appointment_doctor: 35,
-            appointment_date: new Date("2022-12-15T00:00:00+00:00"),
-            status: 0,
-        },
-        {
-            id: 2,
-            appointment_patient: "Lannister",
-            appointment_doctor: 42,
-            appointment_date: new Date("2022-12-15T00:00:00+00:00"),
-            status: 0,
-        },
-        {
-            id: 3,
-            appointment_patient: "Lannister",
-            appointment_doctor: 45,
-            appointment_date: new Date("2022-12-15T00:00:00+00:00"),
-            status: 1,
-        },
-        {
-            id: 4,
-            appointment_patient: "Stark",
-            appointment_doctor: 16,
-            appointment_date: new Date("2022-12-12T00:00:00+00:00"),
-            status: 0,
-        },
-        {
-            id: 5,
-            appointment_patient: "Targaryen",
-            appointment_doctor: 0,
-            appointment_date: new Date("2022-12-14T00:00:00+00:00"),
-            status: 0,
-        },
-        {
-            id: 6,
-            appointment_patient: "Melisandre",
-            appointment_doctor: 15,
-            appointment_date: new Date("2022-12-12T00:00:00+00:00"),
-            status: 1,
-        },
-        {
-            id: 7,
-            appointment_patient: "Clifford",
-            appointment_doctor: 44,
-            appointment_date: new Date("2022-12-13T00:00:00+00:00"),
-            status: 1,
-        },
-        {
-            id: 8,
-            appointment_patient: "Frances",
-            appointment_doctor: 36,
-            appointment_date: new Date("2022-12-15T00:00:00+00:00"),
-            status: 1,
-        },
-        {
-            id: 9,
-            appointment_patient: "Roxie",
-            appointment_doctor: 65,
-            appointment_date: new Date("2022-12-11T00:00:00+00:00"),
-            status: 0,
-        },
-        {
-            id: 10,
-            appointment_patient: "Roxie",
-            appointment_doctor: 65,
-            appointment_date: new Date("2022-12-16T00:00:00+00:00"),
-            status: 0,
-        },
-    ];
-
     return (
         <>
             <div style={{ height: 600, width: "100%" }}>
                 <DataGrid
-                    rows={rows}
+                    rows={data}
                     columns={columns}
-                    columnVisibilityModel={{ status: false }}
+                    columnVisibilityModel={{ isDone: false }}
                     pageSize={15}
                     rowsPerPageOptions={[15]}
                     disableColumnMenu={true}
@@ -159,15 +100,14 @@ const DataTable = () => {
                     density="compact"
                     initialState={{
                         sorting: {
-                          sortModel: [
-                            {
-                              field: 'appointment_date',
-                              sort: 'desc',
-                            },
-                          ],
+                            sortModel: [
+                                {
+                                    field: "appointment_date",
+                                    sort: "desc",
+                                },
+                            ],
                         },
-                      }}
-                    
+                    }}
                     sx={{
                         "& .table-data-header": {
                             backgroundColor: "primary.main",

@@ -38,6 +38,7 @@ const schema = yup.object({
         )
         .required("Field is required"),
     department: yup.string().required("Field is required"),
+    doctor: yup.string().required("Field is required"),
     appointment_date: yup
         .date()
         .min(new Date(), "Can't be before today")
@@ -47,7 +48,7 @@ const schema = yup.object({
 });
 
 const PatientForm = () => {
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, watch } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             dob: null,
@@ -242,6 +243,41 @@ const PatientForm = () => {
                                     )}
                                 />
                             </Grid>
+
+                            <Grid item xs={12}>
+                                <Controller
+                                    control={control}
+                                    name="doctor"
+                                    render={({
+                                        field,
+                                        fieldState: { invalid, error },
+                                    }) => (
+                                        <TextField
+                                            {...field}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            error={invalid}
+                                            helperText={error?.message}
+                                            required
+                                            select
+                                            disabled={!watch("department")}
+                                            label="Doctor"
+                                            defaultValue=""
+                                        >
+                                            <MenuItem value="1">
+                                                doctorA
+                                            </MenuItem>
+                                            <MenuItem value="2">
+                                                Doctorb
+                                            </MenuItem>
+                                            <MenuItem value="3">
+                                                DoctorC
+                                            </MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
                             <Grid item xs={12}>
                                 <Controller
                                     control={control}

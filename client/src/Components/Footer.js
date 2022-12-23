@@ -22,7 +22,7 @@ const Footer = () => {
                         color: "primary.text"
                     }}
                 >
-                    &copy; Copyright 2022 by Anh Tung
+                    &copy; Copyright 2022
                 </Typography>
             </Toolbar>
         </Box>

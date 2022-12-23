@@ -4,7 +4,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ReturnButton } from "../../Common/CommonIndex";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import api from "../../../utils/api";
+import { useAlert } from "../../../context/AlertContext";
 
 const departmentSchema = yup.object({
     department_name: yup
@@ -15,6 +17,8 @@ const departmentSchema = yup.object({
 const EditDepartment = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { id } = useParams();
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
 
     const {
         control,
@@ -24,8 +28,18 @@ const EditDepartment = () => {
         resolver: yupResolver(departmentSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data) => {
+        const request = { name: data.department_name };
+        await api
+            .put(`/api/departments/${id}`, request)
+            .then((res) => {
+                setMessage(`Department ${id} has been updated!`);
+                handleSuccess();
+            })
+            .catch((err) => {
+                setMessage(`Can't update department at the momemnt!`);
+                handleFailure();
+            });
         navigate("/admin/departments");
     };
 
@@ -58,15 +72,13 @@ const EditDepartment = () => {
                         <Controller
                             control={control}
                             name="department_name"
+                            defaultValue={location.state.department_name}
                             render={({
                                 field,
                                 fieldState: { invalid, error },
                             }) => (
                                 <TextField
                                     {...field}
-                                    defaultValue={
-                                        location.state.department_name
-                                    }
                                     value={field.value}
                                     onChange={field.onChange}
                                     error={invalid}

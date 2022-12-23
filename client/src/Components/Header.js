@@ -1,7 +1,17 @@
 import React from "react";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Toolbar, Typography } from "@mui/material";
+import { getUsername, removeUserSession } from "../utils/common";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+
+    const username = getUsername();
+    const navigate = useNavigate()
+    const handleLogout = () => {
+        removeUserSession()
+        navigate('/')
+    }
+    
     return (
         <Box sx={{ flex: "0 1 auto" }} className="green-background">
             <Toolbar>
@@ -13,8 +23,9 @@ const Header = () => {
                     Doctor Portal
                 </Typography>
                 <Typography color="primary.text">
-                    You are logged in as #
+                    You have logged in as {username}
                 </Typography>
+                <Button className="danger" onClick={handleLogout}>Log out</Button>
             </Toolbar>
         </Box>
     );

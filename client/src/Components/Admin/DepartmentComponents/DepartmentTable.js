@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,13 +11,24 @@ import {
     DialogActions,
     Button,
 } from "@mui/material";
+import api from "../../../utils/api";
+import { useAlert } from "../../../context/AlertContext";
 
 const DeleteDialog = (props) => {
-    const { id, department_name, open, handleClose } =
-        props;
+    const { id, department_name, open, handleClose } = props;
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
 
-    const handleDelete = () => {
-        console.log("Deleted ", id);
+    const handleDelete = async () => {
+        await api
+            .delete(`/api/departments/${id}`)
+            .then((res) => {
+                setMessage(`Department ${id} has been deleted!`);
+                handleSuccess();
+            })
+            .catch((err) => {
+                setMessage("Can't delete department at the moment!");
+                handleFailure();
+            });
         handleClose();
     };
 
@@ -35,7 +46,7 @@ const DeleteDialog = (props) => {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                Delete department {department_name} (ID: {id})
+                    Delete department {department_name} (ID: {id})
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -51,6 +62,17 @@ const DeleteDialog = (props) => {
 const DataTable = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedDept, setSelectedDept] = useState();
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        api.get("/api/departments")
+            .then((response) => {
+                setData(response.data);
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            });
+    }, [showDeleteDialog]);
 
     const handleOpenDeleteView = (params) => {
         setShowDeleteDialog(true);
@@ -72,7 +94,7 @@ const DataTable = () => {
             headerClassName: "table-data-header",
         },
         {
-            field: "department_name",
+            field: "name",
             headerName: "Department",
             headerAlign: "center",
             flex: 4,
@@ -96,7 +118,7 @@ const DataTable = () => {
                     component={Link}
                     to={`${params.id}/update`}
                     state={{
-                        department_name: params.row.department_name,
+                        department_name: params.row.name,
                     }}
                     icon={<EditIcon />}
                     label="Edit"
@@ -110,23 +132,11 @@ const DataTable = () => {
         },
     ];
 
-    const rows = [
-        { id: 1, department_name: "Snow", department_doctor_num: 35 },
-        { id: 2, department_name: "Lannister", department_doctor_num: 42 },
-        { id: 3, department_name: "Lannister", department_doctor_num: 45 },
-        { id: 4, department_name: "Stark", department_doctor_num: 16 },
-        { id: 5, department_name: "Targaryen", department_doctor_num: 0 },
-        { id: 6, department_name: "Melisandre", department_doctor_num: 150 },
-        { id: 7, department_name: "Clifford", department_doctor_num: 44 },
-        { id: 8, department_name: "Frances", department_doctor_num: 36 },
-        { id: 9, department_name: "Roxie", department_doctor_num: 65 },
-    ];
-
     return (
         <>
             <div style={{ height: 400, width: "100%" }}>
                 <DataGrid
-                    rows={rows}
+                    rows={data}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}

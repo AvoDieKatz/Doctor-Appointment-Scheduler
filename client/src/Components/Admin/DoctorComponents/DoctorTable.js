@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,13 +11,28 @@ import {
     DialogActions,
     Button,
 } from "@mui/material";
+import api from "../../../utils/api";
+import { useAlert } from "../../../context/AlertContext";
 
 const DeleteDialog = (props) => {
     const { id, doctor_name, doctor_department, open, handleClose } = props;
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
 
-    const handleDelete = () => {
-        console.log("Deleted ", id);
-        handleClose();
+    const handleDelete = async () => {
+        await api
+            .delete(`/api/doctors/${id}`)
+            .then((res) => {
+                console.log("response return");
+                setMessage(`Doctor ${id} has been deleted!`);
+                handleSuccess();
+                handleClose();
+            })
+            .catch((err) => {
+                setMessage("Can't delete doctor at the moment!");
+                handleFailure();
+                console.log(err);
+                handleClose();
+            });
     };
 
     return (
@@ -29,12 +44,11 @@ const DeleteDialog = (props) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
-                Delete Doctor ?
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">Delete Doctor ?</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Delete doctor {doctor_name} (ID: {id}) from department {doctor_department}
+                    Delete doctor {doctor_name} (ID: {id}) from department{" "}
+                    {doctor_department}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -50,6 +64,17 @@ const DeleteDialog = (props) => {
 const DataTable = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState();
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        api.get("/api/doctors")
+            .then((response) => {
+                setData(response.data);
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            });
+    }, [showDeleteDialog]);
 
     const handleOpenDeleteView = (params) => {
         setShowDeleteDialog(true);
@@ -71,17 +96,23 @@ const DataTable = () => {
             headerClassName: "table-data-header",
         },
         {
-            field: "doctor_name",
+            field: "name",
             headerName: "Doctor",
             headerAlign: "center",
             flex: 2,
             headerClassName: "table-data-header",
         },
         {
-            field: "doctor_department",
+            field: "department",
             headerName: "Department",
             headerAlign: "center",
             flex: 2,
+            headerClassName: "table-data-header",
+        },
+        {
+            field: "departmentId",
+            headerName: "Department ID",
+            headerAlign: "center",
             headerClassName: "table-data-header",
         },
         {
@@ -94,8 +125,8 @@ const DataTable = () => {
                     component={Link}
                     to={`${params.id}/update`}
                     state={{
-                        doctor_name: params.row.doctor_name,
-                        doctor_department: params.row.doctor_department
+                        doctor_name: params.row.name,
+                        doctor_departmentId: params.row.departmentId,
                     }}
                     icon={<EditIcon />}
                     label="Edit"
@@ -109,24 +140,13 @@ const DataTable = () => {
         },
     ];
 
-    const rows = [
-        { id: 1, doctor_name: "Snow", doctor_department: 35 },
-        { id: 2, doctor_name: "Lannister", doctor_department: 42 },
-        { id: 3, doctor_name: "Lannister", doctor_department: 45 },
-        { id: 4, doctor_name: "Stark", doctor_department: 16 },
-        { id: 5, doctor_name: "Targaryen", doctor_department: 0 },
-        { id: 6, doctor_name: "Melisandre", doctor_department: 150 },
-        { id: 7, doctor_name: "Clifford", doctor_department: 44 },
-        { id: 8, doctor_name: "Frances", doctor_department: 36 },
-        { id: 9, doctor_name: "Roxie", doctor_department: 65 },
-    ];
-
     return (
         <>
             <div style={{ height: 400, width: "100%" }}>
                 <DataGrid
-                    rows={rows}
+                    rows={data}
                     columns={columns}
+                    columnVisibilityModel={{ departmentId: false }}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                     disableColumnMenu={true}
