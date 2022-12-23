@@ -23,3 +23,22 @@ export const setUserSession = (token, username, roles) => {
 export const removeUserSession = () => {
     localStorage.clear();
 };
+
+export const calculateAge = (dob) => {
+    var diff_ms = Date.now() - new Date(dob).getTime();
+    var age_dt = new Date(diff_ms);
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+};
+
+export const translateGender = (code) => {
+    switch (code) {
+        case 0:
+            return "Others";
+        case 1:
+            return "Male";
+        case 2:
+            return "Female";
+        default:
+            break;
+    }
+};

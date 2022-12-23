@@ -3,25 +3,7 @@ import { Box, Grid, Typography, Button, Divider } from "@mui/material";
 import ReturnButton from "../../Common/ReturnButton";
 import api from "../../../utils/api";
 import { useParams } from "react-router-dom";
-
-const calculateAge = (dob) => {
-    var diff_ms = Date.now() - new Date(dob).getTime();
-    var age_dt = new Date(diff_ms);
-    return Math.abs(age_dt.getUTCFullYear() - 1970);
-};
-
-const translateGender = (code) => {
-    switch (code) {
-        case 0:
-            return "Others";
-        case 1:
-            return "Male";
-        case 2:
-            return "Female";
-        default:
-            break;
-    }
-};
+import { calculateAge, translateGender } from "../../../utils/common";
 
 const Detail = (props) => {
     const {

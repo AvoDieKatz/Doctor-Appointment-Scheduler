@@ -11,6 +11,7 @@ import AdminPage from "./Page/AdminPage";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import LoginForm from "./Components/Authentication/LoginForm";
 import { AuthProvider } from "./context/AuthProvider";
+import { AlertProvider } from "./context/AlertContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,35 +20,46 @@ root.render(
     <>
         <BrowserRouter>
             <AuthProvider>
-                <Routes>
-                    <Route path="/" element={<App />}>
-                        <Route index element={<PatientPage />} />
-                        <Route
-                            element={
-                                <ProtectedRoutes
-                                    allowedRoles={["ROLE_DOCTOR"]}
+                <AlertProvider>
+                    <Routes>
+                        <Route path="/" element={<App />}>
+                            <Route index element={<PatientPage />} />
+                            <Route
+                                element={
+                                    <ProtectedRoutes
+                                        allowedRoles={["ROLE_DOCTOR"]}
+                                    />
+                                }
+                            >
+                                <Route
+                                    path="doctor/*"
+                                    element={<DoctorPage />}
                                 />
-                            }
-                        >
-                            <Route path="doctor/*" element={<DoctorPage />} />
+                            </Route>
+                            <Route
+                                element={
+                                    <ProtectedRoutes
+                                        allowedRoles={["ROLE_ADMIN"]}
+                                    />
+                                }
+                            >
+                                <Route path="admin/*" element={<AdminPage />} />
+                            </Route>
+                            <Route
+                                path="authenticate"
+                                element={<LoginForm />}
+                            />
+                            <Route
+                                path="not-found"
+                                element={<NotFoundPage />}
+                            />
+                            <Route
+                                path="*"
+                                element={<Navigate to="/not-found" />}
+                            />
                         </Route>
-                        <Route
-                            element={
-                                <ProtectedRoutes
-                                    allowedRoles={["ROLE_ADMIN"]}
-                                />
-                            }
-                        >
-                            <Route path="admin/*" element={<AdminPage />} />
-                        </Route>
-                        <Route path="authenticate" element={<LoginForm />} />
-                        <Route path="not-found" element={<NotFoundPage />} />
-                        <Route
-                            path="*"
-                            element={<Navigate to="/not-found" />}
-                        />
-                    </Route>
-                </Routes>
+                    </Routes>
+                </AlertProvider>
             </AuthProvider>
         </BrowserRouter>
     </>

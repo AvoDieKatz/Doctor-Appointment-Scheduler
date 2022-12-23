@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const NotFoundPage = () => {
     const navigate = useNavigate();
     const handleNavigate = () => {
-        navigate("/");
+        navigate(-1);
     };
 
     return (
@@ -25,7 +25,7 @@ const NotFoundPage = () => {
                 The page you’re looking for doesn’t exist.
             </Typography>
             <Button variant="contained" sx={{ mt: 3 }} onClick={handleNavigate}>
-                Back Home
+                Return to previous page
             </Button>
         </Box>
     );
