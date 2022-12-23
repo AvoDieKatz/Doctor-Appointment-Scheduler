@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {
@@ -20,6 +20,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import api from "../../utils/api";
+import { useAlert } from "../../context/AlertContext";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
     fullname: yup.string().required("Field is required"),
@@ -48,16 +51,84 @@ const schema = yup.object({
 });
 
 const PatientForm = () => {
-    const { control, handleSubmit, watch } = useForm({
+    const [departments, setDepartments] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+    const [selectedDepartment, setSelectedDepartment] = useState();
+    const { handleSuccess, handleFailure, setMessage } = useAlert();
+    const navigate = useNavigate();
+    const {
+        control,
+        handleSubmit,
+        watch,
+        reset,
+        formState,
+        // formState: { isSubmitSuccessful },
+    } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
+            fullname: "",
             dob: null,
+            gender: "",
             appointment_date: null,
+            message: "",
+            phone_number: "",
+            department: null,
+            doctor: null,
         },
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+            reset();
+        }
+    }, [formState, reset]);
+
+    useEffect(() => {
+        api.get("/api/departments")
+            .then((res) => {
+                setDepartments(res.data);
+            })
+            .catch((error) => {
+                setMessage("Error!");
+                handleFailure();
+            });
+    }, []);
+
+    useEffect(() => {
+        if (selectedDepartment) {
+            api.get(`/api/departments/${selectedDepartment}/doctors`)
+                .then((res) => {
+                    setDoctors(res.data);
+                })
+                .catch((error) => {
+                    setMessage("Error!");
+                    handleFailure();
+                });
+        }
+    }, [selectedDepartment]);
+
+    const onSubmit = async (data) => {
+        const request = {
+            patientName: data.fullname,
+            dob: new Date(data.dob).toLocaleDateString(),
+            gender: data.gender,
+            appointedDate: new Date(data.appointment_date).toLocaleDateString(),
+            patientMessage: data.message,
+            departmentId: parseInt(data.department),
+            doctorId: parseInt(data.doctor),
+            patientContact: data.phone_number,
+        };
+        await api
+            .post("/api/appointments/create", request)
+            .then((res) => {
+                setMessage("You have successfully schedule an appointment!");
+                handleSuccess();
+            })
+            .catch((error) => {
+                setMessage("Error");
+                handleFailure();
+            });
+        navigate("/");
     };
 
     return (
@@ -72,7 +143,7 @@ const PatientForm = () => {
                 >
                     <Box
                         component="div"
-                        sx={{ m: "16px 0", minWidth: "30vw", maxWidth: "30vw" }}
+                        sx={{ minWidth: "30vw", maxWidth: "30vw" }}
                     >
                         <Typography
                             variant="h5"
@@ -168,17 +239,17 @@ const PatientForm = () => {
                                                 aria-labelledby="gender-radio-group"
                                             >
                                                 <FormControlLabel
-                                                    value="female"
+                                                    value={2}
                                                     control={<Radio />}
                                                     label="Female"
                                                 />
                                                 <FormControlLabel
-                                                    value="male"
+                                                    value={1}
                                                     control={<Radio />}
                                                     label="Male"
                                                 />
                                                 <FormControlLabel
-                                                    value="other"
+                                                    value={0}
                                                     control={<Radio />}
                                                     label="Other"
                                                 />
@@ -222,7 +293,12 @@ const PatientForm = () => {
                                         <TextField
                                             {...field}
                                             value={field.value}
-                                            onChange={field.onChange}
+                                            onChange={(value) => {
+                                                field.onChange(value);
+                                                setSelectedDepartment(
+                                                    value.target.value
+                                                );
+                                            }}
                                             error={invalid}
                                             helperText={error?.message}
                                             required
@@ -230,15 +306,14 @@ const PatientForm = () => {
                                             label="Department"
                                             defaultValue=""
                                         >
-                                            <MenuItem value="bone">
-                                                Bone
-                                            </MenuItem>
-                                            <MenuItem value="organs">
-                                                Organs
-                                            </MenuItem>
-                                            <MenuItem value="eyes">
-                                                Eyes
-                                            </MenuItem>
+                                            {departments.map((option) => (
+                                                <MenuItem
+                                                    key={option.id}
+                                                    value={option.id}
+                                                >
+                                                    {option.name}
+                                                </MenuItem>
+                                            ))}
                                         </TextField>
                                     )}
                                 />
@@ -264,15 +339,14 @@ const PatientForm = () => {
                                             label="Doctor"
                                             defaultValue=""
                                         >
-                                            <MenuItem value="1">
-                                                doctorA
-                                            </MenuItem>
-                                            <MenuItem value="2">
-                                                Doctorb
-                                            </MenuItem>
-                                            <MenuItem value="3">
-                                                DoctorC
-                                            </MenuItem>
+                                            {doctors?.map((option) => (
+                                                <MenuItem
+                                                    key={option.id}
+                                                    value={option.id}
+                                                >
+                                                    {option.name}
+                                                </MenuItem>
+                                            ))}
                                         </TextField>
                                     )}
                                 />
@@ -310,11 +384,23 @@ const PatientForm = () => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    multiline
-                                    rows={4}
-                                    label="Current Condition"
-                                    placeholder="Briefly describe how you feeling"
+                                <Controller
+                                    control={control}
+                                    name="message"
+                                    render={({
+                                        field,
+                                        fieldState: { invalid, error },
+                                    }) => (
+                                        <TextField
+                                            {...field}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            multiline
+                                            rows={4}
+                                            label="Current Condition"
+                                            placeholder="Briefly describe how you feeling"
+                                        />
+                                    )}
                                 />
                             </Grid>
                             <Button

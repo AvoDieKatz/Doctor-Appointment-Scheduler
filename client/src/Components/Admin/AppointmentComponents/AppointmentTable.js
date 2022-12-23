@@ -86,13 +86,13 @@ const DataTable = ({ filterType }) => {
 
     return (
         <>
-            <div style={{ height: 600, width: "100%" }}>
+            <div style={{ height: 520, width: "100%" }}>
                 <DataGrid
                     rows={data}
                     columns={columns}
                     columnVisibilityModel={{ isDone: false }}
-                    pageSize={15}
-                    rowsPerPageOptions={[15]}
+                    pageSize={10}
+                    rowsPerPageOptions={[10]}
                     disableColumnMenu={true}
                     disableSelectionOnClick={true}
                     showCellRightBorder={true}
@@ -102,7 +102,7 @@ const DataTable = ({ filterType }) => {
                         sorting: {
                             sortModel: [
                                 {
-                                    field: "appointment_date",
+                                    field: "scheduledDate",
                                     sort: "desc",
                                 },
                             ],

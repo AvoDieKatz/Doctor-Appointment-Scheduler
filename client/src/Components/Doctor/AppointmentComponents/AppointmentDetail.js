@@ -37,7 +37,7 @@ const AppointmentDetail = () => {
                 setMessage("ERROR!");
                 handleFailure();
             });
-    }, []);
+    }, [id]);
 
     return (
         <Grid
