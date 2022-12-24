@@ -37,9 +37,9 @@ class ReportController extends AbstractController
             return $this->json(['message' => 'The report does not exist'], Response::HTTP_NO_CONTENT);
         }
         return $this->json(
-            $report, 
-            Response::HTTP_OK, 
-            [], 
+            $report,
+            Response::HTTP_OK,
+            [],
             [
                 ObjectNormalizer::IGNORED_ATTRIBUTES => ['appointmentId']
             ]
@@ -66,7 +66,6 @@ class ReportController extends AbstractController
         }
 
         $report = new Report();
-        date_default_timezone_set("Asia/Bangkok");
         $report->setAppointmentId($appointment)
             ->setBloodPressure($data['bloodPressure'])
             ->setOxygen($data['oxygen'])
@@ -81,5 +80,4 @@ class ReportController extends AbstractController
 
         return $this->json(['message' => 'A report is successfully created'], Response::HTTP_CREATED);
     }
-
 }
