@@ -20,7 +20,9 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (error.response) {
-            if (401 === error.response.status) {
+            if (error.response.data.message === "Invalid credentials.") {
+                alert("Invalid credentials.");
+            } else if (401 === error.response.status) {
                 alert("Your session has expired, you will be logged out.");
                 removeUserSession();
                 window.location = "/";

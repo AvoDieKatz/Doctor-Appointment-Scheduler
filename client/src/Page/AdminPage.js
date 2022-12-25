@@ -10,6 +10,7 @@ import {
     EditDoctor,
     AddDepartment,
     EditDepartment,
+    StatisticsControlView
 } from "../Components/Admin/AdminIndex";
 import { SideNav, StaffLayout } from "../Components/Common/CommonIndex";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -59,6 +60,9 @@ const View = () => {
                                     path=":id/update"
                                     element={<EditDepartment />}
                                 />
+                            </Route>
+                            <Route path="statistics">
+                                <Route index element={<StatisticsControlView />} />
                             </Route>
                             <Route
                                 path="*"
