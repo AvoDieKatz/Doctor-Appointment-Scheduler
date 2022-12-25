@@ -50,6 +50,14 @@ const Sidenav = () => {
                 >
                     <ListItemText primary="Department Management" />
                 </ListItemButton>
+                <Divider />
+                <ListItemButton
+                    component={Link}
+                    to="statistics"
+                    selected={section === "statistics"}
+                >
+                    <ListItemText primary="Statistics" />
+                </ListItemButton>
             </List>
         </Box>
     );

@@ -52,6 +52,24 @@ class DepartmentController extends AbstractController
         );
     }
 
+    #[Route('/statistics', name: 'view_statistics', methods: 'GET')]
+    public function viewStatistics(): JsonResponse
+    {
+        $departments = $this->repository->findBy(['deleted' => false]);
+        $data = [];
+        foreach ($departments as $department) {
+            $data[] = [
+                'id' => $department->getId(),
+                'name' => $department->getName(),
+                'numberOfDoctors' => $department->getDoctors()->filter(function ($e) {
+                    return $e->isDeleted() === false;
+                })->count(),
+                'numberOfAppointments' => $department->getAppointments()->count()
+            ];
+        }
+        return $this->json($data, Response::HTTP_OK);
+    }
+
     /*
         This route returns department's id, name and doctors of this department
     */
@@ -104,7 +122,7 @@ class DepartmentController extends AbstractController
         $doctors = $department->getDoctors()->filter(function ($e) {
             return $e->isDeleted() === false;
         });
-        
+
         $data = [];
         foreach ($doctors as $doctor) {
             $data[] = $doctor;

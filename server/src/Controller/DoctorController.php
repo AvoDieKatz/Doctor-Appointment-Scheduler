@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/api/doctors', name: 'api_doctor_')]
 class DoctorController extends AbstractController
@@ -45,6 +46,30 @@ class DoctorController extends AbstractController
         );
     }
 
+    #[Route('/statistics', name: 'view_statistics', methods: 'GET')]
+    public function viewStatistics(): JsonResponse
+    {
+        $doctors = $this->repository->findBy(['deleted' => false]);
+        $data = [];
+        foreach ($doctors as $doctor) {
+            $data[] = [
+                'id' => $doctor->getId(),
+                'name' => $doctor->getName(),
+                'department' => $doctor->getDepartment()->getName(),
+                'numberOfAppointments' => $doctor->getAppointments()->count(),
+                'completedAppointments' => $doctor->getAppointments()->filter(function ($e) {
+                    return $e->isDone() === true;
+                })->count()
+            ];
+        }
+        return $this->json($data, Response::HTTP_OK,
+    [], [
+        ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+            return $object->getId();
+        }
+    ]);
+    }
+    
     #[Route('/{doctorId}', name: 'view_detail', methods: 'GET')]
     public function viewDoctorDetail($doctorId): JsonResponse
     {

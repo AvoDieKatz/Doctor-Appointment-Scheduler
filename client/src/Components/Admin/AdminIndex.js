@@ -13,3 +13,6 @@ export { default as EditDoctor } from "./DoctorComponents/EditDoctor";
 export { default as AppointmentControlView } from "./AdminLayout/AppointmentControlView";
 export { default as AppointmentTable } from "./AppointmentComponents/AppointmentTable";
 export { default as Appointment } from "./AppointmentComponents/Appointment";
+
+export {default as StatisticsControlView} from "./AdminLayout/StatisticsControlView";
+export {default as StatisticsTable} from "./StatisticsComponent/StatisticsTable";
